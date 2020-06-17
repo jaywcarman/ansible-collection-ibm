@@ -4,6 +4,7 @@
   collections:
    - ibmcloud.ibmcollection
   vars:
+    ibmcloud_api_key: "BhhB4iBLDCmS9yi8IHbmL2CGSlt83ceWnwtcS6k6C1iJ"
     pi_name: ansible-demo-power-vm
     sys_type: s922
     pi_image: "7200-04-01"
@@ -17,7 +18,7 @@
     - name: Check for existing SSH Key
       ibm_pi_key_info:
         pi_key_name: "{{ pi_name }}-ssh-key"
-        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        ibmcloud_api_key: "BhhB4iBLDCmS9yi8IHbmL2CGSlt83ceWnwtcS6k6C1iJ"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
       failed_when:
         - pi_ssh_key_existing_output.rc != 0
@@ -35,7 +36,7 @@
         pi_key_name: "{{ pi_name }}-ssh-key"
         pi_ssh_key: "{{ ssh_public_key }}"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
-        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        ibmcloud_api_key: "BhhB4iBLDCmS9yi8IHbmL2CGSlt83ceWnwtcS6k6C1iJ"
       register: pi_ssh_key_create_output
       when: pi_ssh_key_existing_output.resource.id is not defined
 
@@ -48,7 +49,7 @@
     - name: Retrieve image list
       ibm_pi_images_info:
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
-        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        ibmcloud_api_key: "BhhB4iBLDCmS9yi8IHbmL2CGSlt83ceWnwtcS6k6C1iJ"
       register: images_list
 
     - name: Set VM image name/id dictionary fact
@@ -61,7 +62,7 @@
       ibm_pi_instance_info:
         pi_instance_name: "{{ pi_name }}"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
-        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        ibmcloud_api_key: "BhhB4iBLDCmS9yi8IHbmL2CGSlt83ceWnwtcS6k6C1iJ"
       failed_when:
         - pi_instance_existing_output.rc != 0
         - '"does not exist" not in pi_instance_existing_output.stderr'
@@ -76,7 +77,7 @@
     - name: Create a POWER Virtual Server Instance
       ibm_pi_instance:
         state: available
-        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        ibmcloud_api_key: "BhhB4iBLDCmS9yi8IHbmL2CGSlt83ceWnwtcS6k6C1iJ"
         pi_memory: "{{ memory }}"
         pi_processors: "{{ processors }}"
         pi_instance_name: "{{ pi_name }}"

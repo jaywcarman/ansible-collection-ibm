@@ -9,7 +9,7 @@
   tasks:
     - ibm_pi_images_info:
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
-        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        ibmcloud_api_key: "Cw81A7QvCitmp52HcDVz8Q4BeQg5vdxbxvVY7QmLTLW2"
       register: images_list
 
     - debug:
