@@ -6,11 +6,11 @@
   vars:
     pi_name: ansible-demo-power-vm
     sys_type: s922
-    pi_image: "7200-03-03"
+    pi_image: "7200-04-01"
     proc_type: shared
     processors: "0.25"
     memory: "2"
-    pi_cloud_instance_id: "YOUR PI CLOUD INSTANCE ID"
+    pi_cloud_instance_id:  "YOUR PI CLOUD INSTANCE ID"
     ssh_public_key: "YOUR SSH PUBLIC KEY"
   tasks:
     - name: Check for existing SSH Key

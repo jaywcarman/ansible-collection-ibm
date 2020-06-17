@@ -1,36 +1,85 @@
-# IBM Cloud Ansible Collections
+# IBM Power Virtual Server in IBM Cloud
 
-Ansible modules collection for IBM cloud.
+This example creates a Power Systems Virtual Server running AIX or IBMi. The
+server is configured to allow incoming SSH connections through a publicly
+accessible IP address and authenticated using the provided SSH key.
 
-## Getting Started
-Below steps are follwed to install ansible collections for the IBM Cloud resources. All the resources are documented under the [Docs] directory.
+## Power Systems Virtual Server Resources
 
-## Prerequisites
+The following infrastructure resources will be created (Ansible modules in
+parentheses):
 
-1. Install [Python3]
+* SSH Key (ibm_pi_key)
+* Network (ibm_pi_network)
+* Virtual Server Instance (ibm_pi_instance)
 
-2. [RedHat Ansible] 2.9+
+## Configuration Parameters
+
+The following parameters can be set by the user:
+
+* `pi_name`: Name assigned to Virtual Server Instance
+* `sys_type`: The type of system on which to create the VM (s922/e880/any)
+* `pi_image`: VM image name ([retrieve available images])
+* `proc_type`: The type of processor mode in which the VM will run
+               (shared/dedicated)
+* `processors`: The number of vCPUs to assign to the VM (as visibile within the
+                guest operating system)
+* `memory`: The amount of memory (GB) to assign to the VM
+* `pi_cloud_instance_id`: The cloud_instance_id for this account
+* `ssh_public_key`: The value of the ssh public key to be authorized for SSH
+                    access
+
+## Running
+
+### Set API Key and Region
+
+1. [Obtain an IBM Cloud API key].
+
+2. Export your API key to the `IC_API_KEY` environment variable:
 
     ```
-    pip install "ansible>=2.9.2"
+    export IC_API_KEY=<YOUR_API_KEY_HERE>
     ```
 
+    Note: Modules also support the 'ibmcloud_api_key' parameter, but it is
+    recommended to only use this when encrypting your API key value.
 
-## Install
-
-1. Download and Install collection
+3. Export desired IBM Cloud region to the 'IC_REGION' environment variable:
 
     ```
-    ansible-galaxy collection install ibmcloud.ibmcollection
+    export IC_REGION=<REGION_NAME_HERE>
     ```
 
-### Example Projects
+    Note: Modules also support the 'ibmcloud_region' parameter.
 
-1. [VPC Virtual Server Instance](https://github.com/IBM-Cloud/ansible-collection-ibm/tree/master/examples/simple-vm-ssh)
+4. Export desired IBM Cloud zone to the 'IC_ZONE' environment variable:
 
-2. [Power Virtual Server Instance](https://github.com/IBM-Cloud/ansible-collection-ibm/tree/master/examples/simple-vm-power-vs)
+    ```
+    export IC_ZONE=<ZONE_NAMW_HERE>
+    ```
 
+    Note: This is used of multizone supported power instances.
 
-[IBM Cloud Terraform Provider]: https://github.com/IBM-Cloud/terraform-provider-ibm
-[Python3]: https://www.python.org/downloads/
-[Docs]: https://github.com/IBM-Cloud/ansible-collection-ibm/tree/master/docs
+5. Update the ibmcollection path in `ansible.cfg` if collections are installed in non default path
+
+### Create
+
+1. To create all resources and test public SSH connection to the VM, run the
+   'create' playbook:
+
+    ```
+    ansible-playbook create.yml
+    ```
+
+### List Available PI VM Images
+
+1. To list available images run the 'list_pi_images' playbook. *note: Images
+   are specific to a PI instance, and thus the 'pi_cloud_instance_id' var
+   must be set before running this playbook.:
+
+    ```
+    ansible-playbook list_pi_images.yml
+    ```
+
+[retrieve available images]: #list-available-pi-images
+[Ansible search path]: https://docs.ansible.com/ansible/latest/dev_guide/overview_architecture.html#ansible-search-path
