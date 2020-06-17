@@ -103,11 +103,11 @@
 
     - name: Print Public IP Address
       debug:
-        var: pi_instance.addresses[0].externalip
+        var: pi_instance.addresses[0].external_ip
 
     - name: Add VSI to Ansible inventory
       add_host:
-        name: "{{ pi_instance.addresses[0].externalip }}"
+        name: "{{ pi_instance.addresses[0].external_ip }}"
         ansible_user: root
         groups: new_vsi
         ansible_ssh_extra_args: -o StrictHostKeyChecking=no
