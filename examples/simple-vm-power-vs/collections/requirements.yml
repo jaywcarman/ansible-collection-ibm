@@ -1,0 +1,3 @@
+collections:
+  - name: ibmcloud.ibmcollection
+    source: https://galaxy.ansible.com
