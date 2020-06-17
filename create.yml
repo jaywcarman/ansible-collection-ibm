@@ -111,18 +111,3 @@
         ansible_user: root
         groups: new_vsi
         ansible_ssh_extra_args: -o StrictHostKeyChecking=no
-
-- name: Connect to VSI
-  hosts: new_vsi
-  gather_facts: False
-  tasks:
-    - name: Wait for VSI to become reachable over SSH
-      wait_for_connection:
-
-    - name: Collect OS login message
-      command: cat /etc/motd
-      register: os_motd
-
-    - name: Print MOTD
-      debug:
-        var: os_motd.stdout_lines
