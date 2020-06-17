@@ -5,7 +5,7 @@
    - ibmcloud.ibmcollection
   vars:
     ibmcloud_api_key: "BhhB4iBLDCmS9yi8IHbmL2CGSlt83ceWnwtcS6k6C1iJ"
-    pi_name: ansible-demo-power-vm
+    pi_name: ansible-demo-aix1
     sys_type: s922
     pi_image: "7200-04-01"
     proc_type: shared
