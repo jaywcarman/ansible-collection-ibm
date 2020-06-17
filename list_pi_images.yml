@@ -4,11 +4,12 @@
   collections:
    - ibmcloud.ibmcollection
   vars:
-    pi_cloud_instance_id: "YOUR PI CLOUD INSTANCE ID"
+    pi_cloud_instance_id: "4a6de100-2f3e-4277-b4d1-e715a210535f"
 
   tasks:
     - ibm_pi_images_info:
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
       register: images_list
 
     - debug:

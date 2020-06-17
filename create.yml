@@ -10,12 +10,14 @@
     proc_type: shared
     processors: "0.25"
     memory: "2"
-    pi_cloud_instance_id:  "YOUR PI CLOUD INSTANCE ID"
-    ssh_public_key: "YOUR SSH PUBLIC KEY"
+    network: "8570d91f-13ce-4d47-852e-56e4337de7af"
+    pi_cloud_instance_id: "4a6de100-2f3e-4277-b4d1-e715a210535f"
+    ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcCfDfVQ0aZCrvRzVzt32tY+/bTP/B4al5r+X1i9QIuHsm80XLzX8U8ECp3tfCDG/PikEktbcV1bKuhCCMmzix3aNtaVLev27a4EYUIB5PZMN6TKVjGVu9TKn7WAE4m5J41LH2HP5HzFsy8iPWqZmW4U395V5JUKntETHQE62vgCaYq1foSwgQthQGhGUe5PF3Cro5Enl8il09rNLJvrdkVrxgeOkdQ5KBGT1u7GCXX3Esysh+GcUjIUyxVnnfQZ3Aaw2e0wc1zIqTX4DA8KzCsvj3uTJN/keK5vGvVDMV7xwrKCwHK3JGMAXA+zAi4/zXY1VvfNGQVjFbIBED6IN/ root@sc-terraform-t2"
   tasks:
     - name: Check for existing SSH Key
       ibm_pi_key_info:
         pi_key_name: "{{ pi_name }}-ssh-key"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
       failed_when:
         - pi_ssh_key_existing_output.rc != 0
@@ -33,6 +35,7 @@
         pi_key_name: "{{ pi_name }}-ssh-key"
         pi_ssh_key: "{{ ssh_public_key }}"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
       register: pi_ssh_key_create_output
       when: pi_ssh_key_existing_output.resource.id is not defined
 
@@ -45,6 +48,7 @@
     - name: Retrieve image list
       ibm_pi_images_info:
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
       register: images_list
 
     - name: Set VM image name/id dictionary fact
@@ -53,39 +57,11 @@
                         items2dict(key_name='name',
                         value_name='id') }}"
 
-    - name: Check for existing network
-      ibm_pi_network_info:
-        pi_network_name: "{{ pi_name }}-network"
-        pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
-      failed_when:
-        - pi_network_existing_output.rc != 0
-        - '"unable to get network" not in pi_network_existing_output.stderr'
-      register: pi_network_existing_output
-
-    - name: Save existing network as fact
-      set_fact:
-        cacheable: True
-        pi_network: "{{ pi_network_existing_output.resource }}"
-      when: pi_network_existing_output.resource.id is defined
-
-    - name: Add new network
-      ibm_pi_network:
-        pi_network_name: "{{ pi_name }}-network"
-        pi_network_type: "pub-vlan"
-        pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
-      register: pi_network_create_output
-      when: pi_network_existing_output.resource.id is not defined
-
-    - name: Save new network as fact
-      set_fact:
-        cacheable: True
-        pi_network: "{{ pi_network_create_output.resource }}"
-      when: pi_network_existing_output.resource.id is not defined
-
     - name: Check for existing Virtual Server Instance
       ibm_pi_instance_info:
         pi_instance_name: "{{ pi_name }}"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
       failed_when:
         - pi_instance_existing_output.rc != 0
         - '"does not exist" not in pi_instance_existing_output.stderr'
@@ -100,14 +76,14 @@
     - name: Create a POWER Virtual Server Instance
       ibm_pi_instance:
         state: available
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
         pi_memory: "{{ memory }}"
         pi_processors: "{{ processors }}"
         pi_instance_name: "{{ pi_name }}"
         pi_proc_type: "{{ proc_type }}"
         pi_image_id: "{{ image_dict[pi_image] }}"
         pi_volume_ids: []
-        pi_network_ids:
-          - "{{ pi_network.id }}"
+        pi_network_ids: "{{ network }}"
         pi_key_pair_name: "{{ pi_ssh_key.pi_key_name }}"
         pi_sys_type: "{{ sys_type }}"
         pi_replication_policy: none
@@ -126,11 +102,11 @@
 
     - name: Print Public IP Address
       debug:
-        var: pi_instance.addresses[0].external_ip
+        var: pi_instance.addresses[0].externalip
 
     - name: Add VSI to Ansible inventory
       add_host:
-        name: "{{ pi_instance.addresses[0].external_ip }}"
+        name: "{{ pi_instance.addresses[0].externalip }}"
         ansible_user: root
         groups: new_vsi
         ansible_ssh_extra_args: -o StrictHostKeyChecking=no
