@@ -12,7 +12,7 @@
     processors: "0.25"
     memory: "2"
     network: "8570d91f-13ce-4d47-852e-56e4337de7af"
-    pi_cloud_instance_id: "4a6de100-2f3e-4277-b4d1-e715a210535f"
+    pi_cloud_instance_id: "4a6dxxxxx"
     ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcCfDfVQ0aZCrvRzVzt32tY+/bTP/B4al5r+X1i9QIuHsm80XLzX8U8ECp3tfCDG/PikEktbcV1bKuhCCMmzix3aNtaVLev27a4EYUIB5PZMN6TKVjGVu9TKn7WAE4m5J41LH2HP5HzFsy8iPWqZmW4U395V5JUKntETHQE62vgCaYq1foSwgQthQGhGUe5PF3Cro5Enl8il09rNLJvrdkVrxgeOkdQ5KBGT1u7GCXX3Esysh+GcUjIUyxVnnfQZ3Aaw2e0wc1zIqTX4DA8KzCsvj3uTJN/keK5vGvVDMV7xwrKCwHK3JGMAXA+zAi4/zXY1VvfNGQVjFbIBED6IN/ root@sc-terraform-t2"
   tasks:
     - name: Check for existing SSH Key
