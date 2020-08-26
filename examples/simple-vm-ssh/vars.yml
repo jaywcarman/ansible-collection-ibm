@@ -1,7 +1,7 @@
 ---
-name_prefix: ansible-test
-vsi_image: ibm-ubuntu-18-04-64-ppc64le-minimal-for-vsi
-vsi_profile: cp2-2x4
-ssh_public_key: '<ssh_public_key>'
+name_prefix: ansible-test-jay
+vsi_image: ibm-ubuntu-18-04-64
+vsi_profile: cx2-2x4
+ssh_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDHi3DUs4s2TE8oZFQ5m9dzKFFNTrMJonT5DwKA+F40pD0Me4T1JEndqJkPkbsUWj1V3LZXs+gE5t/WSivHxJTjDg6BSWjTmr7wn5dsYj8FjFbQEC5T9jwzz8UCvWAsZcXAE0Gukdz50ewGnLEUZV05eWEkDHr8ifmiqNxFgaP2dR1SIV5qmJgR4fU3XXXZaLbQVgA5s97qU1mgtr7Ofz1d4PxxyqHmmmS7lIufwm3FHqNQ00IxijrTkPkrFKoOrv9IEsOvrVoHrFvYymRqEPSaL8ZPfbtnr6i+AcwFu284BgxJn0IPPwAHkttIHomZyY9JJfATTI4/ERia3I7PGh+zfxIdwuom0Y0iRDc1jVFfa+Il4za9zKAiNiAqYE7DRNkaIK3UF0y/tsKnUTdgtw3Euliz5/D5F/5/MZkrNHII/Ip0heJTk6u8V4SyjYgU84BfO9o1JXb+CScItISJKiZz/EYhUf/Rc8PLBJzpaz5OKuS6zgFRs514wKnDbj/JOJt/sPl1TdyJ/ohu1cDBnYVJuJN9LTVTFxk+U/zB+5zJ0zjs6Hn1XG+X9VjQvmaLw9GnVwSfAvmeyaoF4RRPzGrAULVH86Q/MRn0zu22b+aoF07moZgvHeKn7BlAcSvAEgnZaLBmoGJqV7iS1p1HpDMO3F7Wi/p6exFCvStIGC4pQQ== jwcarman@jx1
 ipv4_cidr_block: 10.240.128.0/24
 zone: us-south-3
