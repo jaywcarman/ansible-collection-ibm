@@ -12,7 +12,7 @@
 # TODO: Test documentation,
 # https://docs.ansible.com/ansible/latest/dev_guide/testing_documentation.html#testing-module-documentation
 DOCUMENTATION = r''' ---
-module: ibm_powervs
+module: powervs
 short_description: IBM Power Systems Virtual Servers Dynamic Inventory
 description:
     - U(https://www.ibm.com/cloud/power-virtual-server)
@@ -33,6 +33,8 @@ options:
               that is assigned to the account
         required: True
         type: str
+requirements:
+    - ibm_cloud_sdk_core
 '''
 
 # TODO: Add examples
@@ -42,12 +44,8 @@ EXAMPLES = r'''
 # TODO: Document return data
 RETURN = r''' # '''
 
-import requests
-from datetime import datetime
-from inspect import isclass
-from urllib.parse import urlencode
-
 from ansible.plugins.inventory import BaseInventoryPlugin
+import ibm_cloud_sdk_core
 
 class InventoryModule(BaseInventoryPlugin):
 
@@ -68,27 +66,16 @@ class InventoryModule(BaseInventoryPlugin):
 
     def parse(self, inventory, loader, path, cache=True):
 
-        # call base method to ensure properties are available for use with other helper methods
         super(InventoryModule, self).parse(inventory, loader, path, cache)
 
-        # this method will parse 'common format' inventory sources and
-        # update any options declared in DOCUMENTATION as needed
         config = self._read_config_data(path)
 
-        # if NOT using _read_config_data you should call set_options directly,
-        # to process any defined configuration for this plugin,
-        # if you don't define any options you can skip
-        #self.set_options()
+        ibmcloud_iam = ibm_cloud_sdk_core.IAMTokenManager(
+            apikey=self.get_option('ibmcloud_api_key'))
 
-        # example consuming options from inventory source
-        mysession = apilib.session(user=self.get_option('api_user'),
-                                   password=self.get_option('api_pass'),
-                                   server=self.get_option('api_server')
-        )
+        pcloud_id = self.get_option('pi_cloud_instance_id'))
 
-
-        # make requests to get data to feed into inventory
-        mydata = mysession.getitall()
+        mydata = ibmcloud_powervs(token, pcloud_id)
 
         #parse data and create inventory objects:
         for colo in mydata:
