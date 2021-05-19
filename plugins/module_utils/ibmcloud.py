@@ -370,9 +370,12 @@ from ansible.module_utils._text import to_text
 from ansible.module_utils.six import iteritems
 from ansible.module_utils.six import ensure_str
 from ansible.module_utils.six import string_types
+from packaging import version
 
 DEFAULT_TF_DIR = '/var/tmp/ansible/ibmcloud/'
 RM_OBJECT_SUBDIRS = True
+TERRAFORM_VERSION_MINIMUM = '0.12.20'
+TERRAFORM_VERSION_LATEST = '0.12.31'
 
 
 def ibmcloud_terraform(
@@ -600,9 +603,7 @@ class Terraform:
         parameters (dict): Resource parameter dictionary
         terraform_dir (str): Terraform working directory
         ibm_provider_version (str): IBM Cloud Terraform provider version
-        terraform_version (str, optional): Terraform version. TODO: If
-                                           not specified version is set
-                                           via table lookup.
+        terraform_version (str, optional): Terraform version.
         env (dict, optional): Mapping of environment variables
     """
     IBM_PROVIDER_BASE_URL = (
@@ -632,7 +633,7 @@ class Terraform:
             parameters,
             terraform_dir,
             ibm_provider_version,
-            terraform_version='0.12.20',
+            terraform_version=None,
             env=None):
 
         self.generation = None
@@ -649,7 +650,6 @@ class Terraform:
             self.function_namespace = parameters['function_namespace']
         self.terraform_dir = terraform_dir
         self.ibm_provider_version = ibm_provider_version
-        self.terraform_version = terraform_version
         self.executable = os.path.join(terraform_dir, 'terraform')
         self.env = env
         self.platform = sys.platform
@@ -680,6 +680,20 @@ class Terraform:
                     r"Terraform v(\d+\.\d+\.\d+)\n", stdout)[0]
             except IndexError:
                 existing_version = None
+
+        # Set terraform version based on existing, minimum and latest values
+        if terraform_version is not None:
+            self.terraform_version = terraform_version
+        elif existing_version is None:
+            self.terraform_version = TERRAFORM_VERSION_LATEST
+        elif (version.parse(existing_version).minor !=
+              version.parse(TERRAFORM_VERSION_MINIMUM).minor):
+            self.terraform_version = TERRAFORM_VERSION_LATEST
+        elif (version.parse(existing_version) <
+              version.parse(TERRAFORM_VERSION_MINIMUM)):
+            self.terraform_version = TERRAFORM_VERSION_LATEST
+        else:
+            self.terraform_version = existing_version
 
         # Download and install Terraform if desired version not found
         if (not os.path.isfile(self.executable) or
