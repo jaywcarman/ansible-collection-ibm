@@ -1,0 +1,32 @@
+---
+- name: Create SSH Key
+  hosts: localhost
+  collections:
+    - ibm.cloudcollection
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Check for existing SSH Key
+      ibm_pi_key_info:
+        pi_key_name: "{{ ssh_key_name }}"
+        pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
+      failed_when:
+        - pi_ssh_key_existing_output.rc != 0
+        - '"does not exist" not in pi_ssh_key_existing_output.stderr'
+      register: pi_ssh_key_existing_output
+
+    - name: Read SSH Public Key from file
+      command: "cat {{ ssh_key_public }}"
+      register: ssh_key_public_value
+      when: pi_ssh_key_existing_output.resource.id is not defined
+
+    - name: Add new SSH Key
+      ibm_pi_key:
+        pi_key_name: "{{ ssh_key_name }}"
+        pi_ssh_key: "{{ ssh_key_public_value.stdout }}"
+        pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
+      when: pi_ssh_key_existing_output.resource.id is not defined

@@ -3,12 +3,14 @@
   hosts: localhost
   collections:
    - ibm.cloudcollection
-  vars:
-    pi_cloud_instance_id: "YOUR PI CLOUD INSTANCE ID"
+  vars_files:
+    - vars.yml
 
   tasks:
     - ibm_pi_images_info:
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
       register: images_list
 
     - debug:

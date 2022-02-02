@@ -6,46 +6,26 @@
   vars:
     pi_name: ansible-demo-power-vm
     sys_type: s922
-    pi_image: "7200-03-03"
+    pi_image: "7200-05-01"
     proc_type: shared
     processors: "0.25"
     memory: "2"
     storage_type: tier1
-    pi_cloud_instance_id: "11956c6d-f7e8-4120-a403-14428405d1fe"
-    ssh_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0eZ4uNSH6rtxNM7MagrBtxwlASw0iKcxDdXq9eNu93xDpsvxdn6xE/JESlIHhf9/45oLw9AKpu/MZYwqQ0O+uedwgtLvorv++fyXI36cls4xmUCuNnEhoK1aXh26N+V+lxejqF3DJhMKHYprQCnyl/8RWkWIFc2Jo60ACZ98MY4rRHgBP/0t1tqmb0I4IdBaYLctVIdv16gYJ5zqGYKeJBMG7XtgkrtOeacVoArrmjHY6n2cNgE5jLt9n9MyyGLjzq1agIpwwsWJGfhzqo2I98UhGWtUlD2UeNHbuJZmbXeyibuoV7RhDZg9LafkOXOTojjZc9rUrd8BChoHhbW3X anil@Anils-MacBook-Pro.local"
+  vars_files:
+    vars.yml
   tasks:
     - name: Check for existing SSH Key
       ibm_pi_key_info:
-        pi_key_name: "{{ pi_name }}-ssh-key"
+        pi_key_name: "{{ ssh_key_name }}"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
-      failed_when:
-        - pi_ssh_key_existing_output.rc != 0
-        - '"does not exist" not in pi_ssh_key_existing_output.stderr'
-      register: pi_ssh_key_existing_output
-
-    - name: Save existing SSH Key as fact
-      set_fact:
-        cacheable: True
-        pi_ssh_key: "{{ pi_ssh_key_existing_output.resource }}"
-      when: pi_ssh_key_existing_output.resource.id is defined
-
-    - name: Add new SSH Key
-      ibm_pi_key:
-        pi_key_name: "{{ pi_name }}-ssh-key"
-        pi_ssh_key: "{{ ssh_public_key }}"
-        pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
-      register: pi_ssh_key_create_output
-      when: pi_ssh_key_existing_output.resource.id is not defined
-
-    - name: Save new SSH Key as fact
-      set_fact:
-        cacheable: True
-        pi_ssh_key: "{{ pi_ssh_key_create_output.resource }}"
-      when: pi_ssh_key_existing_output.resource.id is not defined
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
 
     - name: Retrieve image list
       ibm_pi_images_info:
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
       register: images_list
 
     - name: Set VM image name/id dictionary fact
@@ -58,6 +38,8 @@
       ibm_pi_network_info:
         pi_network_name: "{{ pi_name }}-network"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
       failed_when:
         - pi_network_existing_output.rc != 0
         - '"unable to get network" not in pi_network_existing_output.stderr'
@@ -74,6 +56,8 @@
         pi_network_name: "{{ pi_name }}-network"
         pi_network_type: "pub-vlan"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
       register: pi_network_create_output
       when: pi_network_existing_output.resource.id is not defined
 
@@ -87,6 +71,8 @@
       ibm_pi_instance_info:
         pi_instance_name: "{{ pi_name }}"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
       failed_when:
         - pi_instance_existing_output.rc != 0
         - '"does not exist" not in pi_instance_existing_output.stderr'
@@ -109,7 +95,7 @@
         pi_volume_ids: []
         pi_network:
           - network_id: "{{ pi_network_id }}"
-        pi_key_pair_name: "{{ pi_ssh_key.pi_key_name }}"
+        pi_key_pair_name: "{{ ssh_key_name }}"
         pi_sys_type: "{{ sys_type }}"
         pi_storage_type: "{{ storage_type }}"
         pi_replication_policy: none
@@ -117,6 +103,8 @@
         pi_replicants: "1"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
         id: "{{ pi_instance.resource.id | default(omit) }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
       register: pi_instance_create_output
       when: pi_instance_existing_output.rc != 0
 
@@ -124,6 +112,8 @@
       ibm_pi_instance_info:
         pi_instance_name: "{{ pi_name }}"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
       register: pi_instance_new_output
       when: pi_instance_create_output.resource is defined
 
@@ -142,6 +132,7 @@
         name: "{{ pi_instance.addresses[0].external_ip }}"
         ansible_user: root
         groups: new_vsi
+        ansible_ssh_private_key_file: "{{ ssh_key_private }}"
         ansible_ssh_extra_args: -o StrictHostKeyChecking=no
 
 - name: Connect to VSI
