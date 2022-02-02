@@ -1,0 +1,7 @@
+---
+pi_cloud_instance_id: powervs_service_guid
+ibmcloud_api_key: secretkey  # Can use Ansible Vault to encypt: https://docs.ansible.com/ansible/latest/user_guide/vault.html
+region: mon
+ssh_key_name: tmp_ansible
+ssh_key_public: ~/.ssh/id_rsa_tmp_ansible.pub
+ssh_key_private: ~/.ssh/id_rsa_tmp_ansible
