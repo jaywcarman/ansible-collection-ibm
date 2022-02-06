@@ -34,38 +34,47 @@
                         items2dict(key_name='name',
                         value_name='id') }}"
 
-    - name: Check for existing network
+    - name: Check for existing network with an available IP
       ibm_pi_network_info:
-        pi_network_name: "{{ pi_name }}-network"
+        pi_network_name: "{{ network_name_prefix }}-{{ ansible_loop.index}}"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
         ibmcloud_api_key: "{{ ibmcloud_api_key }}"
         region: "{{ region }}"
       failed_when:
-        - pi_network_existing_output.rc != 0
-        - '"unable to get network" not in pi_network_existing_output.stderr'
-      register: pi_network_existing_output
+        - network_results.rc != 0
+        - '"unable to get network" not in network_results.stderr'
+      when:
+        - ansible_loop.first or (network_results.rc == 0 and network_results.resource.used_ip_percent == 100)
+      register: network_results
+      loop: "{{ range(5)|list }}"
+      loop_control:
+        extended: yes
+
+    - name: Filter existing network search results
+      set_fact:
+        network_result: "{{ network_results.results | json_query('[?skipped == false]') | last }}"
 
     - name: Save existing network as fact
       set_fact:
         cacheable: True
-        pi_network_id: "{{ pi_network_existing_output.resource.id }}"
-      when: pi_network_existing_output.resource.id is defined
+        pi_network_id: "{{ network_result.resource.id }}"
+      when: network_result.resource.id is defined
 
     - name: Add new network
       ibm_pi_network:
-        pi_network_name: "{{ pi_name }}-network"
+        pi_network_name: "{{ network_result.invocation.module_args.pi_network_name }}"
         pi_network_type: "pub-vlan"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
         ibmcloud_api_key: "{{ ibmcloud_api_key }}"
         region: "{{ region }}"
       register: pi_network_create_output
-      when: pi_network_existing_output.resource.id is not defined
+      when: network_result.resource.id is not defined
 
     - name: Save new network as fact
       set_fact:
         cacheable: True
         pi_network_id: "{{ pi_network_create_output.resource.network_id }}"
-      when: pi_network_existing_output.resource.id is not defined
+      when: network_result.resource.id is not defined
 
     - name: Check for existing Virtual Server Instance
       ibm_pi_instance_info:
