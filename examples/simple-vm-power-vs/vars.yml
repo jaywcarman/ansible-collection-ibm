@@ -5,3 +5,4 @@ region: mon
 ssh_key_name: tmp_ansible
 ssh_key_public: ~/.ssh/id_rsa_tmp_ansible.pub
 ssh_key_private: ~/.ssh/id_rsa_tmp_ansible
+network_name_prefix: ansible-demo-network
