@@ -15,7 +15,7 @@ parentheses):
 
 ## Configuration Parameters
 
-The following parameters can be set by the user:
+The following `create.yml` parameters can be set by the user:
 
 * `pi_name`: Name assigned to Virtual Server Instance
 * `sys_type`: The type of system on which to create the VM (s922/e880/any)
@@ -28,6 +28,21 @@ The following parameters can be set by the user:
 * `pi_cloud_instance_id`: The cloud_instance_id for this account
 * `ssh_public_key`: The value of the ssh public key to be authorized for SSH
                     access
+
+The following `vars.yml` parameters can be set by the user:
+
+* `pi_cloud_instance_id`: Power Systems Virtual Server service GUID
+* `ibmcloud_api_key`: IAM Cloud IAM API key
+* `region`: PowerVS service region (e.g. `mon`)
+* `zone`: PowerVS service zone (e.g. `mon01`)
+* `ssh_key_name`: Name of the SSH Key resource created
+* `ssh_key_public`: Path to SSH public key
+* `ssh_key_private`: Path to SSH private key (required to connect to VM after
+                     provisioning)
+* `network_name_prefix`: Network name prefix (an enumerated suffix will be
+                         added automatically)
+* `network_type`: Network type (`pub-vlan` for public, `vlan` for private)
+* `network_cidr`: Network CIDR (only required for private "vlan" networks)
 
 ## Running
 
