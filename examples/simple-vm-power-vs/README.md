@@ -39,10 +39,7 @@ The following `vars.yml` parameters can be set by the user:
 * `ssh_key_public`: Path to SSH public key
 * `ssh_key_private`: Path to SSH private key (required to connect to VM after
                      provisioning)
-* `network_name_prefix`: Network name prefix (an enumerated suffix will be
-                         added automatically)
-* `network_type`: Network type (`pub-vlan` for public, `vlan` for private)
-* `network_cidr`: Network CIDR (only required for private "vlan" networks)
+* `network_name`: Name of network to attach VSI to
 
 ## Running
 

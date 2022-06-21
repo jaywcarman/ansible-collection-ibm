@@ -6,6 +6,4 @@ zone: mon01
 ssh_key_name: tmp_ansible
 ssh_key_public: ~/.ssh/id_rsa_tmp_ansible.pub
 ssh_key_private: ~/.ssh/id_rsa_tmp_ansible
-network_name_prefix: ansible-demo-network
-network_type: vlan         # vlan or pub-vlan
-network_cidr: 10.0.0.0/24  # Only used for private (vlan) network
+network_name: ansible-demo-network

@@ -36,75 +36,16 @@
                         items2dict(key_name='name',
                         value_name='id') }}"
 
-    - name: Check for existing network with an available IP
+    - name: Check for existing network
       ibm_pi_network_info:
-        pi_network_name: "{{ network_name_prefix }}-{{ ansible_loop.index}}"
+        pi_network_name: "{{ network_name }}"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
         ibmcloud_api_key: "{{ ibmcloud_api_key }}"
         region: "{{ region }}"
         zone: "{{ zone }}"
-      failed_when:
-        - network_results.rc != 0
-        - '"unable to get network" not in network_results.stderr'
-      when:
-        - ansible_loop.first or (network_results.rc == 0 and network_results.resource.type != network_type) or (network_results.rc == 0 and network_results.resource.used_ip_percent == 100)
-      register: network_results
-      loop: "{{ range(5)|list }}"
-      loop_control:
-        extended: yes
+      failed_when: network_result.rc != 0
+      register: network_result
 
-    - name: Filter existing network search results
-      set_fact:
-        network_result: "{{ network_results.results | json_query('[?skipped == false]') | last }}"
-
-    - name: Save existing network as fact
-      set_fact:
-        cacheable: True
-        pi_network_id: "{{ network_result.resource.id }}"
-      when: network_result.resource.id is defined
-
-    - name: Add new network (public)
-      ibm_pi_network:
-        pi_network_name: "{{ network_result.invocation.module_args.pi_network_name }}"
-        pi_network_type: "pub-vlan"
-        pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
-        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
-        region: "{{ region }}"
-        zone: "{{ zone }}"
-      register: pi_network_create_output
-      when:
-        - network_type == "pub-vlan"
-        - network_result.resource.id is not defined
-
-    - name: Save new network as fact
-      set_fact:
-        cacheable: True
-        pi_network_id: "{{ pi_network_create_output.resource.network_id }}"
-      when:
-        - network_type == "pub-vlan"
-        - network_result.resource.id is not defined
-
-    - name: Add new network (private)
-      ibm_pi_network:
-        pi_network_name: "{{ network_result.invocation.module_args.pi_network_name }}"
-        pi_network_type: "vlan"
-        pi_cidr: "{{ network_cidr }}"
-        pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
-        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
-        region: "{{ region }}"
-        zone: "{{ zone }}"
-      register: pi_network_create_output
-      when:
-        - network_type == "vlan"
-        - network_result.resource.id is not defined
-
-    - name: Save new network as fact
-      set_fact:
-        cacheable: True
-        pi_network_id: "{{ pi_network_create_output.resource.network_id }}"
-      when:
-        - network_type == "vlan"
-        - network_result.resource.id is not defined
 
     - name: Check for existing Virtual Server Instance
       ibm_pi_instance_info:
@@ -134,7 +75,7 @@
         pi_image_id: "{{ image_dict[pi_image] }}"
         pi_volume_ids: []
         pi_network:
-          - network_id: "{{ pi_network_id }}"
+          - network_id: "{{ network_result.resource.id }}"
         pi_key_pair_name: "{{ ssh_key_name }}"
         pi_sys_type: "{{ sys_type }}"
         pi_storage_type: "{{ storage_type }}"
@@ -165,33 +106,6 @@
         pi_instance: "{{ pi_instance_new_output.resource }}"
       when: pi_instance_new_output.resource is defined
 
-    - name: Print Public IP Address
+    - name: Print VSI network addresses
       debug:
-        var: pi_instance.addresses[0].external_ip
-      when:
-        - network_type == "pub-vlan"
-
-    - name: Add VSI to Ansible inventory
-      add_host:
-        name: "{{ pi_instance.addresses[0].external_ip }}"
-        ansible_user: root
-        groups: new_vsi
-        ansible_ssh_private_key_file: "{{ ssh_key_private }}"
-        ansible_ssh_extra_args: -o StrictHostKeyChecking=no
-      when:
-        - network_type == "pub-vlan"
-
-- name: Connect to VSI
-  hosts: new_vsi
-  gather_facts: False
-  tasks:
-    - name: Wait for VSI to become reachable over SSH
-      wait_for_connection:
-
-    - name: Collect OS login message
-      command: cat /etc/motd
-      register: os_motd
-
-    - name: Print MOTD
-      debug:
-        var: os_motd.stdout_lines
+        var: pi_instance.addresses
