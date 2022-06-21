@@ -12,6 +12,7 @@
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
         ibmcloud_api_key: "{{ ibmcloud_api_key }}"
         region: "{{ region }}"
+        zone: "{{ zone }}"
       failed_when:
         - pi_ssh_key_existing_output.rc != 0
         - '"does not exist" not in pi_ssh_key_existing_output.stderr'
@@ -29,4 +30,5 @@
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
         ibmcloud_api_key: "{{ ibmcloud_api_key }}"
         region: "{{ region }}"
+        zone: "{{ zone }}"
       when: pi_ssh_key_existing_output.resource.id is not defined
