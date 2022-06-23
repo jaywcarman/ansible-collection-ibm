@@ -46,6 +46,18 @@
       failed_when: network_result.rc != 0
       register: network_result
 
+    - name: Create storage volume
+      ibm_pi_volume:
+        state: available
+        pi_volume_name: "{{ storage_volume.name }}"
+        pi_volume_size: "{{ storage_volume.size }}"
+        pi_volume_type: "{{ storage_volume.type }}"
+        pi_volume_shareable: "{{ storage_volume.shareable }}"
+        pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
+        region: "{{ region }}"
+        zone: "{{ zone }}"
+      register: pi_volume_create_output
 
     - name: Check for existing Virtual Server Instance
       ibm_pi_instance_info:
@@ -73,7 +85,8 @@
         pi_instance_name: "{{ pi_name }}"
         pi_proc_type: "{{ proc_type }}"
         pi_image_id: "{{ image_dict[pi_image] }}"
-        pi_volume_ids: []
+        pi_volume_ids:
+          - "{{ pi_volume_create_output.resource.id }}"
         pi_network:
           - network_id: "{{ network_result.resource.id }}"
         pi_key_pair_name: "{{ ssh_key_name }}"

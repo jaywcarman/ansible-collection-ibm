@@ -7,3 +7,8 @@ ssh_key_name: tmp_ansible
 ssh_key_public: ~/.ssh/id_rsa_tmp_ansible.pub
 ssh_key_private: ~/.ssh/id_rsa_tmp_ansible
 network_name: ansible-demo-network
+storage_volume:
+  type: tier1
+  name: ansible-demo-power-vm
+  size: 10 # in GB
+  shareable: true

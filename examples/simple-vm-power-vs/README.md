@@ -40,6 +40,10 @@ The following `vars.yml` parameters can be set by the user:
 * `ssh_key_private`: Path to SSH private key (required to connect to VM after
                      provisioning)
 * `network_name`: Name of network to attach VSI to
+* `storage_volume: type:` Type of additional storage volume
+* `storage_volume: name:` Name of additional storage volume
+* `storage_volume: size:` Size of additional storage volume in GB
+* `storage_volume: shareable:` Make additional storage volume shareable (true/false)
 
 ## Running
 
