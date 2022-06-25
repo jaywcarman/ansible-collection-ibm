@@ -1,12 +1,22 @@
 ---
-pi_cloud_instance_id: powervs_service_guid
-ibmcloud_api_key: secretkey  # Can use Ansible Vault to encypt: https://docs.ansible.com/ansible/latest/user_guide/vault.html
-region: mon
-zone: mon01
-ssh_key_name: tmp_ansible
-ssh_key_public: ~/.ssh/id_rsa_tmp_ansible.pub
-ssh_key_private: ~/.ssh/id_rsa_tmp_ansible
-network_name: ansible-demo-network
+service:
+  pi_cloud_instance_id: <PowerVS Service GUID>
+  ibmcloud_api_key: <IBM Cloue IAM API Key>  # Can use Ansible Vault to encypt: https://docs.ansible.com/ansible/latest/user_guide/vault.html
+  region: mon
+  zone: mon01
+ssh_key:
+  name: tmp_ansible
+  public: ~/.ssh/id_rsa_tmp_ansible.pub
+  private: ~/.ssh/id_rsa_tmp_ansible
+instance:
+  name: ansible-demo-power-vm
+  sys_type: s922
+  image: "7200-05-01"
+  proc_type: shared
+  processors: "0.25"
+  memory: "2"
+network:
+  name: ansible-demo-network
 storage_volume:
   type: tier1
   name: ansible-demo-power-vm

@@ -13,68 +13,37 @@ parentheses):
 * Network (ibm_pi_network)
 * Virtual Server Instance (ibm_pi_instance)
 
-## Configuration Parameters
-
-The following `create.yml` parameters can be set by the user:
-
-* `pi_name`: Name assigned to Virtual Server Instance
-* `sys_type`: The type of system on which to create the VM (s922/e880/any)
-* `pi_image`: VM image name ([retrieve available images])
-* `proc_type`: The type of processor mode in which the VM will run
-               (shared/dedicated)
-* `processors`: The number of vCPUs to assign to the VM (as visibile within the
-                guest operating system)
-* `memory`: The amount of memory (GB) to assign to the VM
-* `pi_cloud_instance_id`: The cloud_instance_id for this account
-* `ssh_public_key`: The value of the ssh public key to be authorized for SSH
-                    access
-
-The following `vars.yml` parameters can be set by the user:
-
-* `pi_cloud_instance_id`: Power Systems Virtual Server service GUID
-* `ibmcloud_api_key`: IAM Cloud IAM API key
-* `region`: PowerVS service region (e.g. `mon`)
-* `zone`: PowerVS service zone (e.g. `mon01`)
-* `ssh_key_name`: Name of the SSH Key resource created
-* `ssh_key_public`: Path to SSH public key
-* `ssh_key_private`: Path to SSH private key (required to connect to VM after
-                     provisioning)
-* `network_name`: Name of network to attach VSI to
-* `storage_volume: type:` Type of additional storage volume
-* `storage_volume: name:` Name of additional storage volume
-* `storage_volume: size:` Size of additional storage volume in GB
-* `storage_volume: shareable:` Make additional storage volume shareable (true/false)
-
 ## Running
 
-### Set API Key and Region
+### Set Configuration Parameters
 
-1. [Obtain an IBM Cloud API key].
+1. The following `vars.yml` parameters can be set by the user:
 
-2. Export your API key to the `IC_API_KEY` environment variable:
-
-    ```
-    export IC_API_KEY=<YOUR_API_KEY_HERE>
-    ```
-
-    Note: Modules also support the 'ibmcloud_api_key' parameter, but it is
-    recommended to only use this when encrypting your API key value.
-
-3. Export desired IBM Cloud region to the 'IC_REGION' environment variable:
-
-    ```
-    export IC_REGION=<REGION_NAME_HERE>
-    ```
-
-    Note: Modules also support the 'region' parameter.
-
-4. Export desired IBM Cloud zone to the 'IC_ZONE' environment variable:
-
-    ```
-    export IC_ZONE=<ZONE_NAMW_HERE>
-    ```
-
-    Note: This is used of multizone supported power instances.
+* `service:`
+  * `pi_cloud_instance_id:` Power Systems Virtual Server service GUID
+  * `ibmcloud_api_key:` IAM Cloud IAM API key
+  * `region:` PowerVS service region (e.g. `mon`)
+  * `zone:` PowerVS service zone (e.g. `mon01`)
+* `ssh_key:`
+  * `name:` Name of the SSH Key resource created
+  * `public:` Local path to SSH public key
+  * `private:` Local path to SSH private key (required to connect to VM after
+    provisioning)
+* `instance:`
+  * `name:` Name assigned to Virtual Server Instance
+  * `sys_type:` The type of system on which to create the VM (s922/e880/etc.)
+  * `image:` VM image name ([retrieve available images])
+  * `proc_type:` The type of processor mode in which the VM will run
+    (shared/dedicated)
+  * `processors:` The number of entitled CPUs to assign to the VM
+  * `memory:` The amount of memory (GB) to assign to the VM
+* `network:`
+  * `name:`
+* `storage_volume:`
+  * `type:` Type of additional storage volume
+  * `name:` Name of additional storage volume
+  * `size:` Size of additional storage volume in GB
+  * `shareable:` Make additional storage volume shareable (true/false)
 
 ### Create
 
