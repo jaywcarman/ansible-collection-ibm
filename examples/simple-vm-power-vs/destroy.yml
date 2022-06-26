@@ -1,5 +1,5 @@
 ---
-- name: POWER VSI Creation Demo
+- name: POWER VSI Destroy Demo
   hosts: localhost
   collections:
    - ibm.cloudcollection
