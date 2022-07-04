@@ -44,6 +44,14 @@ parentheses):
   * `name:` Name of additional storage volume
   * `size:` Size of additional storage volume in GB
   * `shareable:` Make additional storage volume shareable (true/false)
+* `storage_volumes:`
+  * `create:`
+    * - `type:` Type of additional storage volume
+    *   `name:` Name of additional storage volume
+    *   `size:` Size of additional storage volume in GB
+    *   `shareable:` Make additional storage volume shareable (true/false)
+  * `attach:`
+    * - `name:` Name of existing volume to attach
 
 ### Create
 

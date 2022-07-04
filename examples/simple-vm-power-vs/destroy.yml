@@ -8,7 +8,7 @@
   tasks:
     - name: Check for existing Virtual Server Instance
       ibm_pi_instance_info:
-        pi_instance_name: "{{ instance['name'] }}"
+        pi_instance_name: "{{ instance.name }}"
         pi_cloud_instance_id: "{{ service.pi_cloud_instance_id }}"
         ibmcloud_api_key: "{{ service.ibmcloud_api_key }}"
         region: "{{ service.region }}"
@@ -26,29 +26,29 @@
         ibmcloud_api_key: "{{ service.ibmcloud_api_key }}"
         region: "{{ service.region }}"
         zone: "{{ service.zone }}"
-      register: pi_instance_create_output
       when: pi_instance_existing_output.rc == 0
 
-    - name: Check for existing storage volume
+    - name: Check for existing storage volume(s)
       ibm_pi_volume_info:
-        pi_volume_name: "{{ storage_volume.name }}"
+        pi_volume_name: "{{ item.name }}"
         pi_cloud_instance_id: "{{ service.pi_cloud_instance_id }}"
         ibmcloud_api_key: "{{ service.ibmcloud_api_key }}"
         region: "{{ service.region }}"
         zone: "{{ service.zone }}"
       failed_when:
         - pi_volume_existing_output.rc != 0
-        - '"does not exist" not in pi_instance_existing_output.stderr'
+        - '"could not be found" not in pi_volume_existing_output.stderr'
       register: pi_volume_existing_output
+      loop: "{{ storage_volumes.create }}"
 
     - name: Destroy storage volume
       ibm_pi_volume:
         state: absent
-        id: "{{ pi_volume_existing_output.resource.id }}"
-        pi_volume_size: "{{ pi_volume_existing_output.resource.size }}"
+        id: "{{ item.resource.id }}"
+        pi_volume_size: "{{ item.resource.size }}"
         pi_cloud_instance_id: "{{ service.pi_cloud_instance_id }}"
         ibmcloud_api_key: "{{ service.ibmcloud_api_key }}"
         region: "{{ service.region }}"
         zone: "{{ service.zone }}"
-      when: pi_volume_existing_output.rc == 0
-
+      when: item.rc == 0
+      loop: "{{ pi_volume_existing_output.results }}"

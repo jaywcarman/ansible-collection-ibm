@@ -17,8 +17,16 @@ instance:
   memory: "2"
 network:
   name: ansible-demo-network
-storage_volume:
-  type: tier1
-  name: ansible-demo-power-vm
-  size: 10 # in GB
-  shareable: true
+storage_volumes:
+  create:
+    - type: &storage_type tier1  # Use an anchor to make all storage_types consistent
+      name: ansible-demo-vol-1
+      size: 10 # in GB
+      shareable: false
+    - type: *storage_type
+      name: ansible-demo-vol-2
+      size: 10 # in GB
+      shareable: true
+  attach:
+    - name: ansible-demo-existing-shared-vol-1
+    - name: ansible-demo-existing-shared-vol-2

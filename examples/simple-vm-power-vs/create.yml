@@ -38,18 +38,36 @@
       failed_when: network_result.rc != 0
       register: network_result
 
-    - name: Create storage volume
+    - name: Create storage volume(s)
       ibm_pi_volume:
         state: available
-        pi_volume_name: "{{ storage_volume.name }}"
-        pi_volume_size: "{{ storage_volume.size }}"
-        pi_volume_type: "{{ storage_volume.type }}"
-        pi_volume_shareable: "{{ storage_volume.shareable }}"
+        pi_volume_name: "{{ item.name }}"
+        pi_volume_size: "{{ item.size }}"
+        pi_volume_type: "{{ item.type }}"
+        pi_volume_shareable: "{{ item.shareable }}"
         pi_cloud_instance_id: "{{ service.pi_cloud_instance_id }}"
         ibmcloud_api_key: "{{ service.ibmcloud_api_key }}"
         region: "{{ service.region }}"
         zone: "{{ service.zone }}"
       register: pi_volume_create_output
+      loop: "{{ storage_volumes.create }}"
+
+    - name: Check for existing storage volume(s)
+      ibm_pi_volume_info:
+        pi_volume_name: "{{ item.name }}"
+        pi_cloud_instance_id: "{{ service.pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ service.ibmcloud_api_key }}"
+        region: "{{ service.region }}"
+        zone: "{{ service.zone }}"
+      failed_when:
+        - pi_volume_existing_output.rc != 0
+        - '"could not be found" not in pi_volume_existing_output.stderr'
+      register: pi_volume_existing_output
+      loop: "{{ storage_volumes.attach }}"
+
+    - name: Create combined list of created and existing volume IDs
+      set_fact:
+        pi_volume_ids: "{{ (pi_volume_create_output.results | json_query('[].resource.volume_id')) + (pi_volume_existing_output.results | json_query('[].resource.id')) }}"
 
     - name: Check for existing Virtual Server Instance
       ibm_pi_instance_info:
@@ -77,13 +95,12 @@
         pi_instance_name: "{{ instance.name }}"
         pi_proc_type: "{{ instance.proc_type }}"
         pi_image_id: "{{ image_dict[instance.image] }}"
-        pi_volume_ids:
-          - "{{ pi_volume_create_output.resource.volume_id }}"
+        pi_volume_ids: "{{ pi_volume_ids }}"
         pi_network:
           - network_id: "{{ network_result.resource.id }}"
         pi_key_pair_name: "{{ ssh_key.name }}"
         pi_sys_type: "{{ instance.sys_type }}"
-        pi_storage_type: "{{ storage_volume.type }}"
+        pi_storage_type: "{{ storage_volumes.create[0].type }}"
         pi_replication_policy: none
         pi_replication_scheme: suffix
         pi_replicants: "1"
