@@ -8,10 +8,10 @@
 
   tasks:
     - ibm_pi_images_info:
-        pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
-        ibmcloud_api_key: "{{ ibmcloud_api_key }}"
-        region: "{{ region }}"
-        zone: "{{ zone }}"
+        pi_cloud_instance_id: "{{ service.pi_cloud_instance_id }}"
+        ibmcloud_api_key: "{{ service.ibmcloud_api_key }}"
+        region: "{{ service.region }}"
+        zone: "{{ service.zone }}"
       register: images_list
 
     - debug:
