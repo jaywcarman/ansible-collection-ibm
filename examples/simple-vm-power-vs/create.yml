@@ -83,7 +83,7 @@
 
     - name: Save existing Power VSI fact
       set_fact:
-        cacheable: True
+        cacheable: False
         pi_instance: "{{ pi_instance_existing_output.resource }}"
       when: pi_instance_existing_output.rc == 0
 
@@ -123,7 +123,7 @@
 
     - name: Save new Power VSI fact
       set_fact:
-        cacheable: True
+        cacheable: False
         pi_instance: "{{ pi_instance_new_output.resource }}"
       when: pi_instance_new_output.resource is defined
 
