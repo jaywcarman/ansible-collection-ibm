@@ -29,8 +29,6 @@
         pi_image_id: null  # required but unnecessary for resize
         id: "{{ pi_instance.resource.id }}"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
-        region: mon
-        zone: mon01
       register: pi_instance_resize
 
     - name: Print VSI's new processor and memory allocation
