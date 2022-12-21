@@ -10,6 +10,8 @@ The following parameters must be set by the user:
 * `existing_vsi_name`: Name of the existing VSI to resize
 * `processors`: The number of entitled processors to allocate to the VSI
 * `memory`: The amount of memory (GB) allocate to the VSI
+* `shutdown`: true|false - Shutdown VSI _before_ resizing
+* `start`: true|false - Start VSI _after_ resizing
 * `pi_cloud_instance_id`: The cloud_instance_id for this account
 
 ## Running

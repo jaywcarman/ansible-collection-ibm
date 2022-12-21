@@ -7,6 +7,8 @@
     existing_vsi_name: <name>
     new_processors: <number>  # e.g. 0.50
     new_memory: <number>      # e.g. 4
+    shutdown: <bool>          # true|false
+    start: <bool>             # true|false
     pi_cloud_instance_id: <powervs_service_guid>
   tasks:
     - name: Get VSI's starting processor and memory allocation
@@ -21,6 +23,13 @@
           - "Current processors allocation: {{ pi_instance.resource.processors }}"
           - "Current memory allocation: {{ pi_instance.resource.memory }} GB"
 
+    - name: Shutdown VSI
+      ibm_pi_instance_action:
+        pi_action: stop
+        pi_instance_id: "{{ pi_instance.resource.id }}"
+        pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+      when: shutdown
+
     - name: Re-size VSI
       ibm_pi_instance:
         state: available
@@ -30,6 +39,13 @@
         id: "{{ pi_instance.resource.id }}"
         pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
       register: pi_instance_resize
+
+    - name: Start VSI
+      ibm_pi_instance_action:
+        pi_action: start
+        pi_instance_id: "{{ pi_instance.resource.id }}"
+        pi_cloud_instance_id: "{{ pi_cloud_instance_id }}"
+      when: start
 
     - name: Print VSI's new processor and memory allocation
       debug:
