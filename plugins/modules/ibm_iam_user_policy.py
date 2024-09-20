@@ -18,7 +18,7 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_iam_user_policy' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
@@ -28,21 +28,21 @@ options:
         required: False
         type: list
         elements: dict
-    resource_attributes:
-        description:
-            - Set resource attributes.
-        required: False
-        type: list
-        elements: dict
     account_management:
         description:
             - Give access to all account management services
         required: False
         type: bool
         default: False
-    description:
+    tags:
         description:
-            - Description of the Policy
+            - None
+        required: False
+        type: list
+        elements: str
+    rule_operator:
+        description:
+            - Operator that multiple rule conditions are evaluated over
         required: False
         type: str
     rule_conditions:
@@ -51,9 +51,9 @@ options:
         required: False
         type: list
         elements: dict
-    rule_operator:
+    pattern:
         description:
-            - Operator that multiple rule conditions are evaluated over
+            - Pattern rule follows for time-based condition
         required: False
         type: str
     ibm_id:
@@ -67,26 +67,26 @@ options:
         required: True
         type: list
         elements: str
-    tags:
+    resource_attributes:
         description:
-            - None
+            - Set resource attributes.
         required: False
         type: list
-        elements: str
+        elements: dict
     resource_tags:
         description:
             - Set access management tags.
         required: False
         type: list
         elements: dict
+    description:
+        description:
+            - Description of the Policy
+        required: False
+        type: str
     transaction_id:
         description:
             - Set transactionID for debug
-        required: False
-        type: str
-    pattern:
-        description:
-            - Pattern rule follows for time-based condition
         required: False
         type: str
     id:
@@ -104,15 +104,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -142,17 +141,17 @@ TL_REQUIRED_PARAMETERS = [
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
     'resources',
-    'resource_attributes',
     'account_management',
-    'description',
-    'rule_conditions',
+    'tags',
     'rule_operator',
+    'rule_conditions',
+    'pattern',
     'ibm_id',
     'roles',
-    'tags',
+    'resource_attributes',
     'resource_tags',
+    'description',
     'transaction_id',
-    'pattern',
 ]
 
 # Params for Data source
@@ -161,15 +160,15 @@ TL_REQUIRED_PARAMETERS_DS = [
 ]
 
 TL_ALL_PARAMETERS_DS = [
+    'transaction_id',
     'ibm_id',
     'sort',
-    'transaction_id',
 ]
 
 TL_CONFLICTS_MAP = {
     'resources': ['account_management', 'resource_attributes'],
-    'resource_attributes': ['resources', 'account_management'],
     'account_management': ['resources', 'resource_attributes'],
+    'resource_attributes': ['resources', 'account_management'],
 }
 
 # define available arguments/parameters a user can pass to the module
@@ -180,21 +179,21 @@ module_args = dict(
         required=False,
         elements='',
         type='list'),
-    resource_attributes=dict(
-        required=False,
-        elements='',
-        type='list'),
     account_management=dict(
         required=False,
         type='bool'),
-    description=dict(
+    tags=dict(
+        required=False,
+        elements='',
+        type='list'),
+    rule_operator=dict(
         required=False,
         type='str'),
     rule_conditions=dict(
         required=False,
         elements='',
         type='list'),
-    rule_operator=dict(
+    pattern=dict(
         required=False,
         type='str'),
     ibm_id=dict(
@@ -204,7 +203,7 @@ module_args = dict(
         required=False,
         elements='',
         type='list'),
-    tags=dict(
+    resource_attributes=dict(
         required=False,
         elements='',
         type='list'),
@@ -212,10 +211,10 @@ module_args = dict(
         required=False,
         elements='',
         type='list'),
-    transaction_id=dict(
+    description=dict(
         required=False,
         type='str'),
-    pattern=dict(
+    transaction_id=dict(
         required=False,
         type='str'),
     id=dict(
@@ -283,7 +282,7 @@ def run_module():
         resource_type='ibm_iam_user_policy',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -292,7 +291,7 @@ def run_module():
             resource_type='ibm_iam_user_policy',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

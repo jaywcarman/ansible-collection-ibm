@@ -17,15 +17,10 @@ version_added: "2.8"
 description:
     - Retrieve an IBM Cloud 'ibm_dl_gateway' resource
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    bgp_status_updated_at:
-        description:
-            - Date and time BGP status was updated
-        required: False
-        type: str
     link_status_updated_at:
         description:
             - Date and time Link status was updated
@@ -36,17 +31,21 @@ options:
             - The unique user-defined name for this gateway
         required: True
         type: str
+    bgp_status_updated_at:
+        description:
+            - Date and time BGP status was updated
+        required: False
+        type: str
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -74,9 +73,9 @@ TL_REQUIRED_PARAMETERS = [
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'bgp_status_updated_at',
     'link_status_updated_at',
     'name',
+    'bgp_status_updated_at',
 ]
 
 
@@ -87,14 +86,14 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    bgp_status_updated_at=dict(
-        required=False,
-        type='str'),
     link_status_updated_at=dict(
         required=False,
         type='str'),
     name=dict(
         required=True,
+        type='str'),
+    bgp_status_updated_at=dict(
+        required=False,
         type='str'),
     iaas_classic_username=dict(
         type='str',
@@ -130,7 +129,7 @@ def run_module():
         resource_type='ibm_dl_gateway',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS,
         tl_all_params=TL_ALL_PARAMETERS)
 

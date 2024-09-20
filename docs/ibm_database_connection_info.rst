@@ -21,13 +21,21 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
 
 Parameters
 ----------
+
+  user_type (True, str, None)
+    User type.
+
+
+  deployment_id (True, str, None)
+    Deployment ID.
+
 
   user_id (True, str, None)
     User ID.
@@ -41,20 +49,12 @@ Parameters
     Optional certificate root path to prepend certificate names. Certificates would be stored in this directory for use by other commands.
 
 
-  deployment_id (True, str, None)
-    Deployment ID.
-
-
-  user_type (True, str, None)
-    User type.
-
-
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

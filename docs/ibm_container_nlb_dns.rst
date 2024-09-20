@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,12 +31,12 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  nlb_ips (True, list, None)
-    (Required for new resource)
-
-
   cluster (True, str, None)
     (Required for new resource) The name or ID of the cluster. To list the clusters that you have access to, use the `GET /v1/clusters` API or run `ibmcloud ks cluster ls`.
+
+
+  nlb_ips (True, list, None)
+    (Required for new resource)
 
 
   nlb_host (True, str, None)

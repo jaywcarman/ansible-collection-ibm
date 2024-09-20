@@ -18,34 +18,10 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_appid_idp_cloud_directory' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    signup_enabled:
-        description:
-            - None
-        required: False
-        type: bool
-        default: True
-    welcome_enabled:
-        description:
-            - None
-        required: False
-        type: bool
-        default: True
-    reset_password_enabled:
-        description:
-            - None
-        required: False
-        type: bool
-        default: True
-    reset_password_notification_enabled:
-        description:
-            - None
-        required: False
-        type: bool
-        default: True
     identity_confirm_methods:
         description:
             - None
@@ -57,17 +33,18 @@ options:
             - None
         required: False
         type: str
-    tenant_id:
-        description:
-            - (Required for new resource) 
-        required: True
-        type: str
     is_active:
         description:
             - (Required for new resource) 
         required: True
         type: bool
-    self_service_enabled:
+    welcome_enabled:
+        description:
+            - None
+        required: False
+        type: bool
+        default: True
+    reset_password_notification_enabled:
         description:
             - None
         required: False
@@ -79,6 +56,29 @@ options:
         required: False
         type: str
         default: FULL
+    tenant_id:
+        description:
+            - (Required for new resource) 
+        required: True
+        type: str
+    self_service_enabled:
+        description:
+            - None
+        required: False
+        type: bool
+        default: True
+    signup_enabled:
+        description:
+            - None
+        required: False
+        type: bool
+        default: True
+    reset_password_enabled:
+        description:
+            - None
+        required: False
+        type: bool
+        default: True
     id:
         description:
             - (Required when updating or destroying existing resource) IBM Cloud Resource ID.
@@ -94,15 +94,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -125,22 +124,22 @@ author:
 
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
-    ('tenant_id', 'str'),
     ('is_active', 'bool'),
+    ('tenant_id', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'signup_enabled',
-    'welcome_enabled',
-    'reset_password_enabled',
-    'reset_password_notification_enabled',
     'identity_confirm_methods',
     'identity_field',
-    'tenant_id',
     'is_active',
-    'self_service_enabled',
+    'welcome_enabled',
+    'reset_password_notification_enabled',
     'identity_confirm_access_mode',
+    'tenant_id',
+    'self_service_enabled',
+    'signup_enabled',
+    'reset_password_enabled',
 ]
 
 # Params for Data source
@@ -159,18 +158,6 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    signup_enabled=dict(
-        required=False,
-        type='bool'),
-    welcome_enabled=dict(
-        required=False,
-        type='bool'),
-    reset_password_enabled=dict(
-        required=False,
-        type='bool'),
-    reset_password_notification_enabled=dict(
-        required=False,
-        type='bool'),
     identity_confirm_methods=dict(
         required=False,
         elements='',
@@ -178,18 +165,30 @@ module_args = dict(
     identity_field=dict(
         required=False,
         type='str'),
-    tenant_id=dict(
-        required=False,
-        type='str'),
     is_active=dict(
         required=False,
         type='bool'),
-    self_service_enabled=dict(
+    welcome_enabled=dict(
+        required=False,
+        type='bool'),
+    reset_password_notification_enabled=dict(
         required=False,
         type='bool'),
     identity_confirm_access_mode=dict(
         required=False,
         type='str'),
+    tenant_id=dict(
+        required=False,
+        type='str'),
+    self_service_enabled=dict(
+        required=False,
+        type='bool'),
+    signup_enabled=dict(
+        required=False,
+        type='bool'),
+    reset_password_enabled=dict(
+        required=False,
+        type='bool'),
     id=dict(
         required=False,
         type='str'),
@@ -255,7 +254,7 @@ def run_module():
         resource_type='ibm_appid_idp_cloud_directory',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -264,7 +263,7 @@ def run_module():
             resource_type='ibm_appid_idp_cloud_directory',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

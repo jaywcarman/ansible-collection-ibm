@@ -18,7 +18,7 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_api_gateway_endpoint' resource
     - This module does not support idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
@@ -32,35 +32,35 @@ options:
             - (Required for new resource) Endpoint name
         required: True
         type: str
-    managed:
-        description:
-            - Managed indicates if endpoint is online or offline.
-        required: False
-        type: bool
-        default: False
-    provider_id:
-        description:
-            - Provider ID of an endpoint allowable values user-defined and whisk
-        required: False
-        type: str
-        default: user-defined
-    service_instance_crn:
-        description:
-            - (Required for new resource) Api Gateway Service Instance Crn
-        required: True
-        type: str
-    type:
-        description:
-            - Action type of Endpoint ALoowable values are share, unshare, manage, unmanage
-        required: False
-        type: str
-        default: unshare
     routes:
         description:
             - Invokable routes for an endpoint
         required: False
         type: list
         elements: str
+    managed:
+        description:
+            - Managed indicates if endpoint is online or offline.
+        required: False
+        type: bool
+        default: False
+    type:
+        description:
+            - Action type of Endpoint ALoowable values are share, unshare, manage, unmanage
+        required: False
+        type: str
+        default: unshare
+    service_instance_crn:
+        description:
+            - (Required for new resource) Api Gateway Service Instance Crn
+        required: True
+        type: str
+    provider_id:
+        description:
+            - Provider ID of an endpoint allowable values user-defined and whisk
+        required: False
+        type: str
+        default: user-defined
     id:
         description:
             - (Required when updating or destroying existing resource) IBM Cloud Resource ID.
@@ -76,15 +76,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -116,11 +115,11 @@ TL_REQUIRED_PARAMETERS = [
 TL_ALL_PARAMETERS = [
     'open_api_doc_name',
     'name',
-    'managed',
-    'provider_id',
-    'service_instance_crn',
-    'type',
     'routes',
+    'managed',
+    'type',
+    'service_instance_crn',
+    'provider_id',
 ]
 
 # Params for Data source
@@ -143,22 +142,22 @@ module_args = dict(
     name=dict(
         required=False,
         type='str'),
+    routes=dict(
+        required=False,
+        elements='',
+        type='list'),
     managed=dict(
         required=False,
         type='bool'),
-    provider_id=dict(
+    type=dict(
         required=False,
         type='str'),
     service_instance_crn=dict(
         required=False,
         type='str'),
-    type=dict(
+    provider_id=dict(
         required=False,
         type='str'),
-    routes=dict(
-        required=False,
-        elements='',
-        type='list'),
     id=dict(
         required=False,
         type='str'),
@@ -224,7 +223,7 @@ def run_module():
         resource_type='ibm_api_gateway_endpoint',
         tf_type='resource',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS,
         tl_all_params=TL_ALL_PARAMETERS)
 

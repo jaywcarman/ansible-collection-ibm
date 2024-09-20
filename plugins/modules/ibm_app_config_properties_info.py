@@ -17,20 +17,10 @@ version_added: "2.8"
 description:
     - Retrieve an IBM Cloud 'ibm_app_config_properties' resource
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    offset:
-        description:
-            - The number of records to skip. By specifying `offset`, you retrieve a subset of items that starts with the `offset` value. Use `offset` with `limit` to page through the available records.
-        required: False
-        type: int
-    environment_id:
-        description:
-            - Environment Id.
-        required: True
-        type: str
     tags:
         description:
             - Filter the resources to be returned based on the associated tags. Specify the parameter as a list of comma separated tags. Returns resources associated with any of the specified tags.
@@ -48,6 +38,11 @@ options:
         required: False
         type: list
         elements: str
+    offset:
+        description:
+            - The number of records to skip. By specifying `offset`, you retrieve a subset of items that starts with the `offset` value. Use `offset` with `limit` to page through the available records.
+        required: False
+        type: int
     limit:
         description:
             - The number of records to retrieve. By default, the list operation return the first 10 records. To retrieve different set of records, use `limit` with `offset` to page through the available records.
@@ -56,6 +51,11 @@ options:
     guid:
         description:
             - GUID of the App Configuration service. Get it from the service instance credentials section of the dashboard.
+        required: True
+        type: str
+    environment_id:
+        description:
+            - Environment Id.
         required: True
         type: str
     sort:
@@ -76,15 +76,14 @@ options:
         type: bool
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -107,19 +106,19 @@ author:
 
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
-    ('environment_id', 'str'),
     ('guid', 'str'),
+    ('environment_id', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'offset',
-    'environment_id',
     'tags',
     'collections',
     'include',
+    'offset',
     'limit',
     'guid',
+    'environment_id',
     'sort',
     'segments',
     'expand',
@@ -133,12 +132,6 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    offset=dict(
-        required=False,
-        type='int'),
-    environment_id=dict(
-        required=True,
-        type='str'),
     tags=dict(
         required=False,
         type='str'),
@@ -150,10 +143,16 @@ module_args = dict(
         required=False,
         elements='',
         type='list'),
+    offset=dict(
+        required=False,
+        type='int'),
     limit=dict(
         required=False,
         type='int'),
     guid=dict(
+        required=True,
+        type='str'),
+    environment_id=dict(
         required=True,
         type='str'),
     sort=dict(
@@ -200,7 +199,7 @@ def run_module():
         resource_type='ibm_app_config_properties',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS,
         tl_all_params=TL_ALL_PARAMETERS)
 

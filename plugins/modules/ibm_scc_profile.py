@@ -18,31 +18,10 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_scc_profile' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    controls:
-        description:
-            - (Required for new resource) The array of controls that are used to create the profile.
-        required: True
-        type: list
-        elements: dict
-    profile_type:
-        description:
-            - (Required for new resource) The profile type, such as custom or predefined.
-        required: True
-        type: str
-    profile_version:
-        description:
-            - The version status of the profile.
-        required: False
-        type: str
-    instance_id:
-        description:
-            - (Required for new resource) The ID of the Security and Compliance Center instance.
-        required: True
-        type: str
     profile_description:
         description:
             - (Required for new resource) The profile description.
@@ -54,9 +33,31 @@ options:
         required: False
         type: list
         elements: dict
+    profile_version:
+        description:
+            - The version status of the profile.
+        required: False
+        type: str
+        default: 0.0.0
     profile_name:
         description:
             - (Required for new resource) The profile name.
+        required: True
+        type: str
+    profile_type:
+        description:
+            - (Required for new resource) The profile type, such as custom or predefined.
+        required: True
+        type: str
+    controls:
+        description:
+            - (Required for new resource) The array of controls that are used to create the profile.
+        required: True
+        type: list
+        elements: dict
+    instance_id:
+        description:
+            - (Required for new resource) The ID of the Security and Compliance Center instance.
         required: True
         type: str
     id:
@@ -74,15 +75,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -105,33 +105,33 @@ author:
 
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
-    ('controls', 'list'),
-    ('profile_type', 'str'),
-    ('instance_id', 'str'),
     ('profile_description', 'str'),
     ('profile_name', 'str'),
+    ('profile_type', 'str'),
+    ('controls', 'list'),
+    ('instance_id', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'controls',
-    'profile_type',
-    'profile_version',
-    'instance_id',
     'profile_description',
     'default_parameters',
+    'profile_version',
     'profile_name',
+    'profile_type',
+    'controls',
+    'instance_id',
 ]
 
 # Params for Data source
 TL_REQUIRED_PARAMETERS_DS = [
-    ('instance_id', 'str'),
     ('profile_id', 'str'),
+    ('instance_id', 'str'),
 ]
 
 TL_ALL_PARAMETERS_DS = [
-    'instance_id',
     'profile_id',
+    'instance_id',
 ]
 
 TL_CONFLICTS_MAP = {
@@ -141,19 +141,6 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    controls=dict(
-        required=False,
-        elements='',
-        type='list'),
-    profile_type=dict(
-        required=False,
-        type='str'),
-    profile_version=dict(
-        required=False,
-        type='str'),
-    instance_id=dict(
-        required=False,
-        type='str'),
     profile_description=dict(
         required=False,
         type='str'),
@@ -161,7 +148,20 @@ module_args = dict(
         required=False,
         elements='',
         type='list'),
+    profile_version=dict(
+        required=False,
+        type='str'),
     profile_name=dict(
+        required=False,
+        type='str'),
+    profile_type=dict(
+        required=False,
+        type='str'),
+    controls=dict(
+        required=False,
+        elements='',
+        type='list'),
+    instance_id=dict(
         required=False,
         type='str'),
     id=dict(
@@ -229,7 +229,7 @@ def run_module():
         resource_type='ibm_scc_profile',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -238,7 +238,7 @@ def run_module():
             resource_type='ibm_scc_profile',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

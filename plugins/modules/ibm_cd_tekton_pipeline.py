@@ -18,35 +18,35 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_cd_tekton_pipeline' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
+    worker:
+        description:
+            - Specify the worker that is to be used to run the trigger, indicated by a worker object with only the worker ID. If not specified or set as `worker: { id: 'public' }`, the IBM Managed shared workers are used.
+        required: False
+        type: list
+        elements: dict
     pipeline_id:
         description:
             - (Required for new resource) String.
         required: True
         type: str
-    worker:
-        description:
-            - Details of the worker used to run the pipeline.
-        required: False
-        type: list
-        elements: dict
-    enable_notifications:
-        description:
-            - Flag whether to enable notifications for this pipeline. When enabled, pipeline run events will be published on all slack integration specified channels in the parent toolchain. If omitted, this feature is disabled by default.
-        required: False
-        type: bool
-        default: False
     next_build_number:
         description:
-            - The build number that will be used for the next pipeline run.
+            - Specify the build number that will be used for the next pipeline run. Build numbers can be any positive whole number between 0 and 100000000000000.
         required: False
         type: int
     enable_partial_cloning:
         description:
-            - Flag whether to enable partial cloning for this pipeline. When partial clone is enabled, only the files contained within the paths specified in definition repositories are read and cloned, this means that symbolic links might not work. If omitted, this feature is disabled by default.
+            - Flag to enable partial cloning for this pipeline. When partial clone is enabled, only the files contained within the paths specified in definition repositories are read and cloned, this means that symbolic links might not work.
+        required: False
+        type: bool
+        default: False
+    enable_notifications:
+        description:
+            - Flag to enable notifications for this pipeline. If enabled, the Tekton pipeline run events will be published to all the destinations specified by the Slack and Event Notifications integrations in the parent toolchain.
         required: False
         type: bool
         default: False
@@ -65,15 +65,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -101,11 +100,11 @@ TL_REQUIRED_PARAMETERS = [
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'pipeline_id',
     'worker',
-    'enable_notifications',
+    'pipeline_id',
     'next_build_number',
     'enable_partial_cloning',
+    'enable_notifications',
 ]
 
 # Params for Data source
@@ -124,20 +123,20 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    pipeline_id=dict(
-        required=False,
-        type='str'),
     worker=dict(
         required=False,
         elements='',
         type='list'),
-    enable_notifications=dict(
+    pipeline_id=dict(
         required=False,
-        type='bool'),
+        type='str'),
     next_build_number=dict(
         required=False,
         type='int'),
     enable_partial_cloning=dict(
+        required=False,
+        type='bool'),
+    enable_notifications=dict(
         required=False,
         type='bool'),
     id=dict(
@@ -205,7 +204,7 @@ def run_module():
         resource_type='ibm_cd_tekton_pipeline',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -214,7 +213,7 @@ def run_module():
             resource_type='ibm_cd_tekton_pipeline',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

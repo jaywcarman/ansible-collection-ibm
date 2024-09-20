@@ -18,66 +18,29 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_hpcs' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    units:
+    failover_units:
         description:
-            - (Required for new resource) The number of operational crypto units for your service instance
-        required: True
-        type: int
-    service_endpoints:
-        description:
-            - Types of the service endpoints. Possible values are `public-and-private`, `private-only`.
+            - The number of failover crypto units for your service instance
         required: False
-        type: str
-    plan:
-        description:
-            - (Required for new resource) The plan type of the HPCS Instance
-        required: True
-        type: str
+        type: int
     revocation_threshold:
         description:
             - (Required for new resource) Revocation Threshold Value
         required: True
         type: int
-    admins:
-        description:
-            - (Required for new resource) Crypto Unit Administrators
-        required: True
-        type: list
-        elements: dict
     signature_threshold:
         description:
             - (Required for new resource) Signature Threshold Value
         required: True
         type: int
-    resource_group_id:
+    units:
         description:
-            - The resource group id
-        required: False
-        type: str
-    name:
-        description:
-            - (Required for new resource) A name for the HPCS instance
+            - (Required for new resource) The number of operational crypto units for your service instance
         required: True
-        type: str
-    tags:
-        description:
-            - None
-        required: False
-        type: list
-        elements: str
-    location:
-        description:
-            - (Required for new resource) The location where the HPCS instance available
-        required: True
-        type: str
-    failover_units:
-        description:
-            - The number of failover crypto units for your service instance
-        required: False
         type: int
     service:
         description:
@@ -85,10 +48,47 @@ options:
         required: False
         type: str
         default: hs-crypto
+    resource_group_id:
+        description:
+            - The resource group id
+        required: False
+        type: str
+    admins:
+        description:
+            - (Required for new resource) Crypto Unit Administrators
+        required: True
+        type: list
+        elements: dict
     signature_server_url:
         description:
             - URL of signing service
         required: False
+        type: str
+    plan:
+        description:
+            - (Required for new resource) The plan type of the HPCS Instance
+        required: True
+        type: str
+    service_endpoints:
+        description:
+            - Types of the service endpoints. Possible values are `public-and-private`, `private-only`.
+        required: False
+        type: str
+    tags:
+        description:
+            - None
+        required: False
+        type: list
+        elements: str
+    name:
+        description:
+            - (Required for new resource) A name for the HPCS instance
+        required: True
+        type: str
+    location:
+        description:
+            - (Required for new resource) The location where the HPCS instance available
+        required: True
         type: str
     id:
         description:
@@ -105,15 +105,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -136,30 +135,30 @@ author:
 
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
-    ('units', 'int'),
-    ('plan', 'str'),
     ('revocation_threshold', 'int'),
-    ('admins', 'list'),
     ('signature_threshold', 'int'),
+    ('units', 'int'),
+    ('admins', 'list'),
+    ('plan', 'str'),
     ('name', 'str'),
     ('location', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'units',
-    'service_endpoints',
-    'plan',
-    'revocation_threshold',
-    'admins',
-    'signature_threshold',
-    'resource_group_id',
-    'name',
-    'tags',
-    'location',
     'failover_units',
+    'revocation_threshold',
+    'signature_threshold',
+    'units',
     'service',
+    'resource_group_id',
+    'admins',
     'signature_server_url',
+    'plan',
+    'service_endpoints',
+    'tags',
+    'name',
+    'location',
 ]
 
 # Params for Data source
@@ -169,9 +168,9 @@ TL_REQUIRED_PARAMETERS_DS = [
 
 TL_ALL_PARAMETERS_DS = [
     'resource_group_id',
-    'location',
-    'name',
     'service',
+    'name',
+    'location',
 ]
 
 TL_CONFLICTS_MAP = {
@@ -181,45 +180,45 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
+    failover_units=dict(
+        required=False,
+        type='int'),
+    revocation_threshold=dict(
+        required=False,
+        type='int'),
+    signature_threshold=dict(
+        required=False,
+        type='int'),
     units=dict(
         required=False,
         type='int'),
-    service_endpoints=dict(
+    service=dict(
+        required=False,
+        type='str'),
+    resource_group_id=dict(
+        required=False,
+        type='str'),
+    admins=dict(
+        required=False,
+        elements='',
+        type='list'),
+    signature_server_url=dict(
         required=False,
         type='str'),
     plan=dict(
         required=False,
         type='str'),
-    revocation_threshold=dict(
-        required=False,
-        type='int'),
-    admins=dict(
-        required=False,
-        elements='',
-        type='list'),
-    signature_threshold=dict(
-        required=False,
-        type='int'),
-    resource_group_id=dict(
-        required=False,
-        type='str'),
-    name=dict(
+    service_endpoints=dict(
         required=False,
         type='str'),
     tags=dict(
         required=False,
         elements='',
         type='list'),
+    name=dict(
+        required=False,
+        type='str'),
     location=dict(
-        required=False,
-        type='str'),
-    failover_units=dict(
-        required=False,
-        type='int'),
-    service=dict(
-        required=False,
-        type='str'),
-    signature_server_url=dict(
         required=False,
         type='str'),
     id=dict(
@@ -287,7 +286,7 @@ def run_module():
         resource_type='ibm_hpcs',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -296,7 +295,7 @@ def run_module():
             resource_type='ibm_hpcs',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

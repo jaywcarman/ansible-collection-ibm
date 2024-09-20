@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,16 +31,44 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  cis_id (True, str, None)
-    (Required for new resource) CIS instance crn
-
-
   min_tls_version (False, str, 1.2)
     Minimum version of TLS required
 
 
-  cname_flattening (False, str, None)
-    cname_flattening setting
+  opportunistic_encryption (False, str, None)
+    opportunistic_encryption setting
+
+
+  origin_error_page_pass_thru (False, str, None)
+    origin_error_page_pass_thru setting
+
+
+  max_upload (False, int, None)
+    Maximum upload
+
+
+  cis_id (True, str, None)
+    (Required for new resource) CIS instance crn
+
+
+  tls_client_auth (False, str, None)
+    tls_client_auth setting
+
+
+  true_client_ip_header (False, str, None)
+    true_client_ip_header setting
+
+
+  domain_id (True, str, None)
+    (Required for new resource) Associated CIS domain
+
+
+  dnssec (False, str, None)
+    DNS Sec setting
+
+
+  ipv6 (False, str, None)
+    ipv6 setting
 
 
   browser_check (False, str, None)
@@ -51,116 +79,96 @@ Parameters
     hotlink_protection setting
 
 
-  tls_client_auth (False, str, None)
-    tls_client_auth setting
-
-
-  challenge_ttl (False, int, None)
-    Challenge TTL setting
-
-
-  max_upload (False, int, None)
-    Maximum upload
-
-
-  minify (False, list, None)
-    Minify setting
-
-
-  dnssec (False, str, None)
-    DNS Sec setting
-
-
-  always_use_https (False, str, None)
-    always_use_https setting
-
-
-  pseudo_ipv4 (False, str, None)
-    pseudo_ipv4 setting
-
-
-  websockets (False, str, None)
-    websockets setting
-
-
-  automatic_https_rewrites (False, str, None)
-    automatic_https_rewrites setting
-
-
-  ipv6 (False, str, None)
-    ipv6 setting
+  image_size_optimization (False, str, None)
+    image_size_optimization setting
 
 
   ip_geolocation (False, str, None)
     ip_geolocation setting
 
 
-  image_load_optimization (False, str, None)
-    image_load_optimization setting
-
-
-  server_side_exclude (False, str, None)
-    server_side_exclude setting
-
-
-  security_header (False, list, None)
-    Security Header Setting
-
-
-  prefetch_preload (False, str, None)
-    prefetch_preload setting
-
-
-  response_buffering (False, str, None)
-    response_buffering setting
-
-
   script_load_optimization (False, str, None)
     script_load_optimization setting
-
-
-  waf (False, str, None)
-    WAF setting
-
-
-  image_size_optimization (False, str, None)
-    image_size_optimization setting
 
 
   cipher (False, list, None)
     Cipher settings
 
 
-  domain_id (True, str, None)
-    (Required for new resource) Associated CIS domain
-
-
-  ssl (False, str, None)
-    SSL/TLS setting
-
-
-  opportunistic_encryption (False, str, None)
-    opportunistic_encryption setting
+  always_use_https (False, str, None)
+    always_use_https setting
 
 
   http2 (False, str, None)
     http2 setting
 
 
-  origin_error_page_pass_thru (False, str, None)
-    origin_error_page_pass_thru setting
+  server_side_exclude (False, str, None)
+    server_side_exclude setting
 
 
-  brotli (False, str, None)
-    brotli setting
+  websockets (False, str, None)
+    websockets setting
 
 
-  true_client_ip_header (False, str, None)
-    true_client_ip_header setting
+  challenge_ttl (False, int, None)
+    Challenge TTL setting
+
+
+  minify (False, list, None)
+    Minify setting
+
+
+  security_header (False, list, None)
+    Security Header Setting
+
+
+  waf (False, str, None)
+    WAF setting
+
+
+  ssl (False, str, None)
+    SSL/TLS setting
+
+
+  origin_max_http_version (False, str, None)
+    Max HTTP version used to connect to the origin
+
+
+  cname_flattening (False, str, None)
+    cname_flattening setting
+
+
+  automatic_https_rewrites (False, str, None)
+    automatic_https_rewrites setting
+
+
+  pseudo_ipv4 (False, str, None)
+    pseudo_ipv4 setting
+
+
+  response_buffering (False, str, None)
+    response_buffering setting
+
+
+  origin_post_quantum_encryption (False, str, None)
+    Enables post-quantum cryptography to connect to the origin
+
+
+  prefetch_preload (False, str, None)
+    prefetch_preload setting
 
 
   mobile_redirect (False, list, None)
     None
+
+
+  image_load_optimization (False, str, None)
+    image_load_optimization setting
+
+
+  brotli (False, str, None)
+    brotli setting
 
 
   id (False, str, None)
@@ -172,11 +180,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

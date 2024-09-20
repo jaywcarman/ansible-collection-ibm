@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,24 +31,16 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  fallback_pool_id (True, str, None)
-    (Required for new resource) fallback pool ID
+  cis_id (True, str, None)
+    (Required for new resource) CIS instance crn
 
 
-  default_pool_ids (True, list, None)
-    (Required for new resource) List of default Pool IDs
+  domain_id (True, str, None)
+    (Required for new resource) Associated CIS domain
 
 
-  proxied (False, bool, False)
-    set to true if proxy needs to be enabled
-
-
-  description (False, str, None)
-    Description for the load balancer instance
-
-
-  ttl (False, int, 60)
-    TTL value
+  name (True, str, None)
+    (Required for new resource) name
 
 
   session_affinity (False, str, none)
@@ -59,28 +51,36 @@ Parameters
     None
 
 
-  cis_id (True, str, None)
-    (Required for new resource) CIS instance crn
+  pop_pools (False, list, None)
+    None
 
 
-  domain_id (True, str, None)
-    (Required for new resource) Associated CIS domain
+  default_pool_ids (True, list, None)
+    (Required for new resource) List of default Pool IDs
 
 
-  enabled (False, bool, True)
-    set to true of LB needs to enabled
-
-
-  name (True, str, None)
-    (Required for new resource) name
+  ttl (False, int, 60)
+    TTL value
 
 
   steering_policy (False, str, None)
     Steering policy info
 
 
-  pop_pools (False, list, None)
-    None
+  enabled (False, bool, True)
+    set to true of LB needs to enabled
+
+
+  fallback_pool_id (True, str, None)
+    (Required for new resource) fallback pool ID
+
+
+  description (False, str, None)
+    Description for the load balancer instance
+
+
+  proxied (False, bool, False)
+    set to true if proxy needs to be enabled
 
 
   id (False, str, None)
@@ -92,11 +92,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

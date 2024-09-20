@@ -18,32 +18,10 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_app' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    space_guid:
-        description:
-            - (Required for new resource) Define space guid to which app belongs
-        required: True
-        type: str
-    buildpack:
-        description:
-            - Buildpack to build the app. 3 options: a) Blank means autodetection; b) A Git Url pointing to a buildpack; c) Name of an installed buildpack.
-        required: False
-        type: str
-    health_check_type:
-        description:
-            - Type of health check to perform.
-        required: False
-        type: str
-        default: port
-    route_guid:
-        description:
-            - Define the route guids which should be bound to the application.
-        required: False
-        type: list
-        elements: str
     service_instance_guid:
         description:
             - Define the service instance guids that should be bound to this application.
@@ -55,28 +33,18 @@ options:
             - (Required for new resource) Define the  path of the zip file of the application.
         required: True
         type: str
-    app_version:
-        description:
-            - Version of the application
-        required: False
-        type: str
-    command:
-        description:
-            - The initial command for the app
-        required: False
-        type: str
-    wait_time_minutes:
-        description:
-            - Define timeout to wait for the app instances to start/update/restage etc.
-        required: False
-        type: int
-        default: 20
     tags:
         description:
             - None
         required: False
         type: list
         elements: str
+    health_check_type:
+        description:
+            - Type of health check to perform.
+        required: False
+        type: str
+        default: port
     name:
         description:
             - (Required for new resource) The name for the app
@@ -113,6 +81,38 @@ options:
             - The maximum amount of disk available to an instance of an app. In megabytes.
         required: False
         type: int
+    route_guid:
+        description:
+            - Define the route guids which should be bound to the application.
+        required: False
+        type: list
+        elements: str
+    app_version:
+        description:
+            - Version of the application
+        required: False
+        type: str
+    command:
+        description:
+            - The initial command for the app
+        required: False
+        type: str
+    space_guid:
+        description:
+            - (Required for new resource) Define space guid to which app belongs
+        required: True
+        type: str
+    buildpack:
+        description:
+            - Buildpack to build the app. 3 options: a) Blank means autodetection; b) A Git Url pointing to a buildpack; c) Name of an installed buildpack.
+        required: False
+        type: str
+    wait_time_minutes:
+        description:
+            - Define timeout to wait for the app instances to start/update/restage etc.
+        required: False
+        type: int
+        default: 20
     id:
         description:
             - (Required when updating or destroying existing resource) IBM Cloud Resource ID.
@@ -128,15 +128,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -159,23 +158,17 @@ author:
 
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
-    ('space_guid', 'str'),
     ('app_path', 'str'),
     ('name', 'str'),
+    ('space_guid', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'space_guid',
-    'buildpack',
-    'health_check_type',
-    'route_guid',
     'service_instance_guid',
     'app_path',
-    'app_version',
-    'command',
-    'wait_time_minutes',
     'tags',
+    'health_check_type',
     'name',
     'memory',
     'instances',
@@ -183,6 +176,12 @@ TL_ALL_PARAMETERS = [
     'health_check_http_endpoint',
     'health_check_timeout',
     'disk_quota',
+    'route_guid',
+    'app_version',
+    'command',
+    'space_guid',
+    'buildpack',
+    'wait_time_minutes',
 ]
 
 # Params for Data source
@@ -203,19 +202,6 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    space_guid=dict(
-        required=False,
-        type='str'),
-    buildpack=dict(
-        required=False,
-        type='str'),
-    health_check_type=dict(
-        required=False,
-        type='str'),
-    route_guid=dict(
-        required=False,
-        elements='',
-        type='list'),
     service_instance_guid=dict(
         required=False,
         elements='',
@@ -223,19 +209,13 @@ module_args = dict(
     app_path=dict(
         required=False,
         type='str'),
-    app_version=dict(
-        required=False,
-        type='str'),
-    command=dict(
-        required=False,
-        type='str'),
-    wait_time_minutes=dict(
-        required=False,
-        type='int'),
     tags=dict(
         required=False,
         elements='',
         type='list'),
+    health_check_type=dict(
+        required=False,
+        type='str'),
     name=dict(
         required=False,
         type='str'),
@@ -255,6 +235,25 @@ module_args = dict(
         required=False,
         type='int'),
     disk_quota=dict(
+        required=False,
+        type='int'),
+    route_guid=dict(
+        required=False,
+        elements='',
+        type='list'),
+    app_version=dict(
+        required=False,
+        type='str'),
+    command=dict(
+        required=False,
+        type='str'),
+    space_guid=dict(
+        required=False,
+        type='str'),
+    buildpack=dict(
+        required=False,
+        type='str'),
+    wait_time_minutes=dict(
         required=False,
         type='int'),
     id=dict(
@@ -322,7 +321,7 @@ def run_module():
         resource_type='ibm_app',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -331,7 +330,7 @@ def run_module():
             resource_type='ibm_app',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

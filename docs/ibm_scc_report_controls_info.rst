@@ -21,7 +21,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -29,28 +29,12 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  status (False, str, None)
-    The compliance status value.
-
-
-  sort (False, str, None)
-    This field sorts controls by using a valid sort field. To learn more, see [Sorting](https://cloud.ibm.com/docs/api-handbook?topic=api-handbook-sorting).
-
-
   control_name (False, str, None)
     The name of the control.
 
 
-  control_description (False, str, None)
-    The description of the control.
-
-
   control_category (False, str, None)
     A control category value.
-
-
-  instance_id (True, str, None)
-    The ID of the Security and Compliance Center instance.
 
 
   report_id (True, str, None)
@@ -61,12 +45,28 @@ Parameters
     The ID of the control.
 
 
+  sort (False, str, None)
+    This field sorts controls by using a valid sort field. To learn more, see [Sorting](https://cloud.ibm.com/docs/api-handbook?topic=api-handbook-sorting).
+
+
+  instance_id (True, str, None)
+    The ID of the Security and Compliance Center instance.
+
+
+  control_description (False, str, None)
+    The description of the control.
+
+
+  status (False, str, None)
+    The compliance status value.
+
+
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

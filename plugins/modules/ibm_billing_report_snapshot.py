@@ -18,7 +18,7 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_billing_report_snapshot' resource
     - This module does not support idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
@@ -32,11 +32,12 @@ options:
             - (Required for new resource) Frequency of taking the snapshot of the billing reports.
         required: True
         type: str
-    cos_bucket:
+    report_types:
         description:
-            - (Required for new resource) The name of the COS bucket to store the snapshot of the billing reports.
-        required: True
-        type: str
+            - The type of billing reports to take snapshot of. Possible values are [account_summary, enterprise_summary, account_resource_instance_usage].
+        required: False
+        type: list
+        elements: str
     versioning:
         description:
             - A new version of report is created or the existing report version is overwritten with every update.
@@ -49,12 +50,11 @@ options:
         required: False
         type: str
         default: IBMCloud-Billing-Reports
-    report_types:
+    cos_bucket:
         description:
-            - The type of billing reports to take snapshot of. Possible values are [account_summary, enterprise_summary, account_resource_instance_usage].
-        required: False
-        type: list
-        elements: str
+            - (Required for new resource) The name of the COS bucket to store the snapshot of the billing reports.
+        required: True
+        type: str
     id:
         description:
             - (Required when updating or destroying existing resource) IBM Cloud Resource ID.
@@ -70,15 +70,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -110,10 +109,10 @@ TL_REQUIRED_PARAMETERS = [
 TL_ALL_PARAMETERS = [
     'cos_location',
     'interval',
-    'cos_bucket',
+    'report_types',
     'versioning',
     'cos_reports_folder',
-    'report_types',
+    'cos_bucket',
 ]
 
 # Params for Data source
@@ -136,19 +135,19 @@ module_args = dict(
     interval=dict(
         required=False,
         type='str'),
-    cos_bucket=dict(
+    report_types=dict(
         required=False,
-        type='str'),
+        elements='',
+        type='list'),
     versioning=dict(
         required=False,
         type='str'),
     cos_reports_folder=dict(
         required=False,
         type='str'),
-    report_types=dict(
+    cos_bucket=dict(
         required=False,
-        elements='',
-        type='list'),
+        type='str'),
     id=dict(
         required=False,
         type='str'),
@@ -214,7 +213,7 @@ def run_module():
         resource_type='ibm_billing_report_snapshot',
         tf_type='resource',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS,
         tl_all_params=TL_ALL_PARAMETERS)
 

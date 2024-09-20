@@ -18,7 +18,7 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_cd_tekton_pipeline_trigger_property' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
@@ -27,24 +27,25 @@ options:
             - (Required for new resource) The trigger ID.
         required: True
         type: str
-    type:
+    name:
         description:
-            - (Required for new resource) Property type.
+            - (Required for new resource) Property name.
         required: True
         type: str
-    path:
+    locked:
         description:
-            - A dot notation path for `integration` type properties only, that selects a value from the tool integration. If left blank the full tool integration data will be used.
+            - When true, this property cannot be overridden at runtime. Attempting to override it will result in run requests being rejected. The default is false.
         required: False
-        type: str
+        type: bool
+        default: False
     pipeline_id:
         description:
             - (Required for new resource) The Tekton pipeline ID.
         required: True
         type: str
-    name:
+    type:
         description:
-            - (Required for new resource) Property name.
+            - (Required for new resource) Property type.
         required: True
         type: str
     value:
@@ -58,12 +59,11 @@ options:
         required: False
         type: list
         elements: str
-    locked:
+    path:
         description:
-            - When true, this property cannot be overridden at runtime. Attempting to override it will result in run requests being rejected. The default is false.
+            - A dot notation path for `integration` type properties only, to select a value from the tool integration. If left blank the full tool integration data will be used.
         required: False
-        type: bool
-        default: False
+        type: str
     id:
         description:
             - (Required when updating or destroying existing resource) IBM Cloud Resource ID.
@@ -79,15 +79,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -111,21 +110,21 @@ author:
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
     ('trigger_id', 'str'),
-    ('type', 'str'),
-    ('pipeline_id', 'str'),
     ('name', 'str'),
+    ('pipeline_id', 'str'),
+    ('type', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
     'trigger_id',
-    'type',
-    'path',
-    'pipeline_id',
     'name',
+    'locked',
+    'pipeline_id',
+    'type',
     'value',
     'enum',
-    'locked',
+    'path',
 ]
 
 # Params for Data source
@@ -151,16 +150,16 @@ module_args = dict(
     trigger_id=dict(
         required=False,
         type='str'),
-    type=dict(
+    name=dict(
         required=False,
         type='str'),
-    path=dict(
+    locked=dict(
         required=False,
-        type='str'),
+        type='bool'),
     pipeline_id=dict(
         required=False,
         type='str'),
-    name=dict(
+    type=dict(
         required=False,
         type='str'),
     value=dict(
@@ -170,9 +169,9 @@ module_args = dict(
         required=False,
         elements='',
         type='list'),
-    locked=dict(
+    path=dict(
         required=False,
-        type='bool'),
+        type='str'),
     id=dict(
         required=False,
         type='str'),
@@ -238,7 +237,7 @@ def run_module():
         resource_type='ibm_cd_tekton_pipeline_trigger_property',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -247,7 +246,7 @@ def run_module():
             resource_type='ibm_cd_tekton_pipeline_trigger_property',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

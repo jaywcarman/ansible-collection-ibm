@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,16 +31,16 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
+  pi_language_code (True, str, None)
+    (Required for new resource) Language code.
+
+
   pi_cloud_instance_id (True, str, None)
-    (Required for new resource) PI cloud instance ID
+    (Required for new resource) The GUID of the service instance associated with an account.
 
 
   pi_instance_name (True, str, None)
-    (Required for new resource) The unique identifier or name of the instance
-
-
-  pi_language_code (True, str, None)
-    (Required for new resource) Language code
+    (Required for new resource) The unique identifier or name of the instance.
 
 
   id (False, str, None)

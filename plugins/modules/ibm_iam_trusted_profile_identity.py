@@ -18,10 +18,21 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_iam_trusted_profile_identity' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
+    type:
+        description:
+            - (Required for new resource) Type of the identity.
+        required: True
+        type: str
+    accounts:
+        description:
+            - Only valid for the type user. Accounts from which a user can assume the trusted profile.
+        required: False
+        type: list
+        elements: str
     description:
         description:
             - Description of the identity that can assume the trusted profile. This is optional field for all the types of identities. When this field is not set for the identity type 'serviceid' then the description of the service id is used. Description is recommended for the identity type 'crn' E.g. 'Instance 1234 of IBM Cloud Service project'.
@@ -42,17 +53,6 @@ options:
             - (Required for new resource) Identifier of the identity that can assume the trusted profiles. This can be a user identifier (IAM id), serviceid or crn. Internally it uses account id of the service id for the identifier 'serviceid' and for the identifier 'crn' it uses account id contained in the CRN.
         required: True
         type: str
-    type:
-        description:
-            - (Required for new resource) Type of the identity.
-        required: True
-        type: str
-    accounts:
-        description:
-            - Only valid for the type user. Accounts from which a user can assume the trusted profile.
-        required: False
-        type: list
-        elements: str
     id:
         description:
             - (Required when updating or destroying existing resource) IBM Cloud Resource ID.
@@ -68,15 +68,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -99,20 +98,20 @@ author:
 
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
+    ('type', 'str'),
     ('profile_id', 'str'),
     ('identity_type', 'str'),
     ('identifier', 'str'),
-    ('type', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
+    'type',
+    'accounts',
     'description',
     'profile_id',
     'identity_type',
     'identifier',
-    'type',
-    'accounts',
 ]
 
 # Params for Data source
@@ -135,6 +134,13 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
+    type=dict(
+        required=False,
+        type='str'),
+    accounts=dict(
+        required=False,
+        elements='',
+        type='list'),
     description=dict(
         required=False,
         type='str'),
@@ -147,13 +153,6 @@ module_args = dict(
     identifier=dict(
         required=False,
         type='str'),
-    type=dict(
-        required=False,
-        type='str'),
-    accounts=dict(
-        required=False,
-        elements='',
-        type='list'),
     id=dict(
         required=False,
         type='str'),
@@ -219,7 +218,7 @@ def run_module():
         resource_type='ibm_iam_trusted_profile_identity',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -228,7 +227,7 @@ def run_module():
             resource_type='ibm_iam_trusted_profile_identity',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

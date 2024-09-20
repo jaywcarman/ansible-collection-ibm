@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,8 +31,20 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  resource_tags (False, list, None)
-    Set access management tags.
+  rule_conditions (False, list, None)
+    Rule conditions enforced by the policy
+
+
+  pattern (False, str, None)
+    Pattern rule follows for time-based condition
+
+
+  roles (True, list, None)
+    (Required for new resource) Role names of the policy definition
+
+
+  tags (False, list, None)
+    None
 
 
   description (False, str, None)
@@ -43,28 +55,12 @@ Parameters
     Set transactionID for debug
 
 
-  roles (True, list, None)
-    (Required for new resource) Role names of the policy definition
-
-
-  resource_attributes (False, list, None)
-    Set resource attributes.
-
-
-  account_management (False, bool, False)
-    Give access to all account management services
-
-
-  tags (False, list, None)
-    None
+  resource_tags (False, list, None)
+    Set access management tags.
 
 
   rule_operator (False, str, None)
     Operator that multiple rule conditions are evaluated over
-
-
-  pattern (False, str, None)
-    Pattern rule follows for time-based condition
 
 
   access_group_id (True, str, None)
@@ -75,8 +71,12 @@ Parameters
     None
 
 
-  rule_conditions (False, list, None)
-    Rule conditions enforced by the policy
+  resource_attributes (False, list, None)
+    Set resource attributes.
+
+
+  account_management (False, bool, False)
+    Give access to all account management services
 
 
   id (False, str, None)
@@ -88,11 +88,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

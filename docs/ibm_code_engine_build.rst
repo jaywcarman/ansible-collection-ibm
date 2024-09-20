@@ -23,21 +23,13 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
 
 Parameters
 ----------
-
-  source_context_dir (False, str, None)
-    Option directory in the repository that contains the buildpacks file or the Dockerfile.
-
-
-  source_revision (False, str, None)
-    Commit, tag, or branch in the source repository to pull. This field is optional if the `source_type` is `git` and uses the HEAD of default branch if not specified. If the `source_type` value is `local`, this field must be omitted.
-
 
   project_id (True, str, None)
     (Required for new resource) The ID of the project.
@@ -47,32 +39,8 @@ Parameters
     (Required for new resource) The name of the image.
 
 
-  output_secret (True, str, None)
-    (Required for new resource) The secret that is required to access the image registry. Make sure that the secret is granted with push permissions towards the specified container registry namespace.
-
-
-  strategy_size (False, str, medium)
-    Optional size for the build, which determines the amount of resources used. Build sizes are `small`, `medium`, `large`, `xlarge`.
-
-
   source_secret (False, str, None)
     Name of the secret that is used access the repository source. This field is optional if the `source_type` is `git`. Additionally, if the `source_url` points to a repository that requires authentication, the build will be created but cannot access any source code, until this property is provided, too. If the `source_type` value is `local`, this field must be omitted.
-
-
-  source_type (False, str, git)
-    Specifies the type of source to determine if your build source is in a repository or based on local source code.* local - For builds from local source code.* git - For builds from git version controlled source code.
-
-
-  timeout (False, int, 600)
-    The maximum amount of time, in seconds, that can pass before the build must succeed or fail.
-
-
-  name (True, str, None)
-    (Required for new resource) The name of the build. Use a name that is unique within the project.
-
-
-  strategy_type (True, str, None)
-    (Required for new resource) The strategy to use for building the image.
 
 
   source_url (False, str, None)
@@ -81,6 +49,38 @@ Parameters
 
   strategy_spec_file (False, str, Dockerfile)
     Optional path to the specification file that is used for build strategies for building an image.
+
+
+  source_revision (False, str, None)
+    Commit, tag, or branch in the source repository to pull. This field is optional if the `source_type` is `git` and uses the HEAD of default branch if not specified. If the `source_type` value is `local`, this field must be omitted.
+
+
+  timeout (False, int, 600)
+    The maximum amount of time, in seconds, that can pass before the build must succeed or fail.
+
+
+  strategy_type (True, str, None)
+    (Required for new resource) The strategy to use for building the image.
+
+
+  name (True, str, None)
+    (Required for new resource) The name of the build.
+
+
+  output_secret (True, str, None)
+    (Required for new resource) The secret that is required to access the image registry. Make sure that the secret is granted with push permissions towards the specified container registry namespace.
+
+
+  source_context_dir (False, str, None)
+    Optional directory in the repository that contains the buildpacks file or the Dockerfile.
+
+
+  source_type (False, str, git)
+    Specifies the type of source to determine if your build source is in a repository or based on local source code.* local - For builds from local source code.* git - For builds from git version controlled source code.
+
+
+  strategy_size (False, str, medium)
+    Optional size for the build, which determines the amount of resources used. Build sizes are `small`, `medium`, `large`, `xlarge`, `xxlarge`.
 
 
   id (False, str, None)
@@ -92,11 +92,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

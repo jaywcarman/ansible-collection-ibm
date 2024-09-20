@@ -23,29 +23,13 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
 
 Parameters
 ----------
-
-  signup_enabled (False, bool, True)
-    None
-
-
-  welcome_enabled (False, bool, True)
-    None
-
-
-  reset_password_enabled (False, bool, True)
-    None
-
-
-  reset_password_notification_enabled (False, bool, True)
-    None
-
 
   identity_confirm_methods (False, list, None)
     None
@@ -55,11 +39,23 @@ Parameters
     None
 
 
-  tenant_id (True, str, None)
+  is_active (True, bool, None)
     (Required for new resource)
 
 
-  is_active (True, bool, None)
+  welcome_enabled (False, bool, True)
+    None
+
+
+  reset_password_notification_enabled (False, bool, True)
+    None
+
+
+  identity_confirm_access_mode (False, str, FULL)
+    None
+
+
+  tenant_id (True, str, None)
     (Required for new resource)
 
 
@@ -67,7 +63,11 @@ Parameters
     None
 
 
-  identity_confirm_access_mode (False, str, FULL)
+  signup_enabled (False, bool, True)
+    None
+
+
+  reset_password_enabled (False, bool, True)
     None
 
 
@@ -80,11 +80,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

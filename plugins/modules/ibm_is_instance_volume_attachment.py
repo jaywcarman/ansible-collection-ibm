@@ -18,13 +18,13 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_is_instance_volume_attachment' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    name:
+    profile:
         description:
-            - The user-defined name for this volume attachment.
+            - The  globally unique name for the volume profile to use for this volume.
         required: False
         type: str
     delete_volume_on_attachment_delete:
@@ -33,32 +33,32 @@ options:
         required: False
         type: bool
         default: True
-    delete_volume_on_instance_delete:
+    iops:
         description:
-            - If set to true, when deleting the instance the volume will also be deleted.
+            - The maximum I/O operations per second (IOPS) for the volume.
         required: False
-        type: bool
+        type: int
     tags:
         description:
             - UserTags for the volume instance
         required: False
         type: list
         elements: str
-    profile:
+    encryption_key:
         description:
-            - The  globally unique name for the volume profile to use for this volume.
+            - The CRN of the [Key Protect Root Key](https://cloud.ibm.com/docs/key-protect?topic=key-protect-getting-started-tutorial) or [Hyper Protect Crypto Service Root Key](https://cloud.ibm.com/docs/hs-crypto?topic=hs-crypto-get-started) for this resource.
         required: False
         type: str
-    snapshot:
+    name:
         description:
-            - The snapshot of the volume to be attached
+            - The user-defined name for this volume attachment.
         required: False
         type: str
-    capacity:
+    delete_volume_on_instance_delete:
         description:
-            - The capacity of the volume in gigabytes. The specified minimum and maximum capacity values for creating or updating volumes may expand in the future.
+            - If set to true, when deleting the instance the volume will also be deleted.
         required: False
-        type: int
+        type: bool
     instance:
         description:
             - (Required for new resource) Instance id
@@ -69,19 +69,24 @@ options:
             - Instance id
         required: False
         type: str
-    iops:
+    capacity:
         description:
-            - The maximum I/O operations per second (IOPS) for the volume.
+            - The capacity of the volume in gigabytes. The specified minimum and maximum capacity values for creating or updating volumes may expand in the future.
         required: False
         type: int
+    snapshot:
+        description:
+            - The snapshot ID of the volume to be attached
+        required: False
+        type: str
+    snapshot_crn:
+        description:
+            - The snapshot crn of the volume to be attached
+        required: False
+        type: str
     volume_name:
         description:
             - The unique user-defined name for this volume
-        required: False
-        type: str
-    encryption_key:
-        description:
-            - The CRN of the [Key Protect Root Key](https://cloud.ibm.com/docs/key-protect?topic=key-protect-getting-started-tutorial) or [Hyper Protect Crypto Service Root Key](https://cloud.ibm.com/docs/hs-crypto?topic=hs-crypto-get-started) for this resource.
         required: False
         type: str
     id:
@@ -97,17 +102,6 @@ options:
             - absent
         default: available
         required: False
-    generation:
-        description:
-            - The generation of Virtual Private Cloud infrastructure
-              that you want to use. Supported values are 1 for VPC
-              generation 1, and 2 for VPC generation 2 infrastructure.
-              If this value is not specified, 2 is used by default. This
-              can also be provided via the environment variable
-              'IC_GENERATION'.
-        default: 2
-        required: False
-        type: int
     region:
         description:
             - The IBM Cloud region where you want to create your
@@ -135,79 +129,84 @@ TL_REQUIRED_PARAMETERS = [
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'name',
-    'delete_volume_on_attachment_delete',
-    'delete_volume_on_instance_delete',
-    'tags',
     'profile',
-    'snapshot',
-    'capacity',
+    'delete_volume_on_attachment_delete',
+    'iops',
+    'tags',
+    'encryption_key',
+    'name',
+    'delete_volume_on_instance_delete',
     'instance',
     'volume',
-    'iops',
+    'capacity',
+    'snapshot',
+    'snapshot_crn',
     'volume_name',
-    'encryption_key',
 ]
 
 # Params for Data source
 TL_REQUIRED_PARAMETERS_DS = [
-    ('instance', 'str'),
     ('name', 'str'),
+    ('instance', 'str'),
 ]
 
 TL_ALL_PARAMETERS_DS = [
-    'instance',
     'name',
+    'instance',
 ]
 
 TL_CONFLICTS_MAP = {
-    'tags': ['volume'],
     'profile': ['volume'],
-    'snapshot': ['volume'],
-    'capacity': ['volume'],
-    'volume': ['iops', 'volume_name', 'profile', 'capacity', 'snapshot', 'tags'],
     'iops': ['volume'],
+    'tags': ['volume'],
+    'volume': ['iops', 'volume_name', 'profile', 'capacity', 'snapshot', 'tags'],
+    'capacity': ['volume'],
+    'snapshot': ['volume', 'snapshot_crn'],
+    'snapshot_crn': ['volume', 'snapshot'],
 }
 
 # define available arguments/parameters a user can pass to the module
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    name=dict(
+    profile=dict(
         required=False,
         type='str'),
     delete_volume_on_attachment_delete=dict(
         required=False,
         type='bool'),
-    delete_volume_on_instance_delete=dict(
+    iops=dict(
         required=False,
-        type='bool'),
+        type='int'),
     tags=dict(
         required=False,
         elements='',
         type='list'),
-    profile=dict(
+    encryption_key=dict(
         required=False,
         type='str'),
-    snapshot=dict(
+    name=dict(
         required=False,
         type='str'),
-    capacity=dict(
+    delete_volume_on_instance_delete=dict(
         required=False,
-        type='int'),
+        type='bool'),
     instance=dict(
         required=False,
         type='str'),
     volume=dict(
         required=False,
         type='str'),
-    iops=dict(
+    capacity=dict(
         required=False,
         type='int'),
-    volume_name=dict(
+    snapshot=dict(
         required=False,
         type='str'),
-    encryption_key=dict(
+    snapshot_crn=dict(
+        required=False,
+        type='str'),
+    volume_name=dict(
         required=False,
         type='str'),
     id=dict(
@@ -218,11 +217,6 @@ module_args = dict(
         required=False,
         default='available',
         choices=(['available', 'absent'])),
-    generation=dict(
-        type='int',
-        required=False,
-        fallback=(env_fallback, ['IC_GENERATION']),
-        default=2),
     region=dict(
         type='str',
         fallback=(env_fallback, ['IC_REGION']),
@@ -266,28 +260,29 @@ def run_module():
     if len(conflicts):
         module.fail_json(msg=("conflicts exist: {}".format(conflicts)))
 
-    # VPC required arguments checks
-    if module.params['generation'] == 1:
-        missing_args = []
-        if module.params['iaas_classic_username'] is None:
-            missing_args.append('iaas_classic_username')
-        if module.params['iaas_classic_api_key'] is None:
-            missing_args.append('iaas_classic_api_key')
-        if missing_args:
-            module.fail_json(msg=(
-                "VPC generation=1 missing required arguments: " +
-                ", ".join(missing_args)))
-    elif module.params['generation'] == 2:
-        if module.params['ibmcloud_api_key'] is None:
-            module.fail_json(
-                msg=("VPC generation=2 missing required argument: "
-                     "ibmcloud_api_key"))
+    if 'generation' in module.params:
+        # VPC required arguments checks
+        if module.params['generation'] == 1:
+            missing_args = []
+            if module.params['iaas_classic_username'] is None:
+                missing_args.append('iaas_classic_username')
+            if module.params['iaas_classic_api_key'] is None:
+                missing_args.append('iaas_classic_api_key')
+            if missing_args:
+                module.fail_json(msg=(
+                    "VPC generation=1 missing required arguments: " +
+                    ", ".join(missing_args)))
+        elif module.params['generation'] == 2:
+            if module.params['ibmcloud_api_key'] is None:
+                module.fail_json(
+                    msg=("VPC generation=2 missing required argument: "
+                         "ibmcloud_api_key"))
 
     result_ds = ibmcloud_terraform(
         resource_type='ibm_is_instance_volume_attachment',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -296,7 +291,7 @@ def run_module():
             resource_type='ibm_is_instance_volume_attachment',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

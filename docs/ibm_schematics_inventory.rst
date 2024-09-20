@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -35,8 +35,8 @@ Parameters
     The description of your Inventory definition. The description can be up to 2048 characters long in size.
 
 
-  resource_group (False, str, None)
-    Resource-group name for the Inventory definition.   By default, Inventory definition will be created in Default Resource Group.
+  inventories_ini (False, str, None)
+    Input inventory of host and host group for the playbook, in the `.ini` file format.
 
 
   resource_queries (False, list, None)
@@ -51,8 +51,8 @@ Parameters
     List of locations supported by IBM Cloud Schematics service.  While creating your workspace or action, choose the right region, since it cannot be changed.  Note, this does not limit the location of the IBM Cloud resources, provisioned using Schematics.
 
 
-  inventories_ini (False, str, None)
-    Input inventory of host and host group for the playbook, in the `.ini` file format.
+  resource_group (False, str, None)
+    Resource-group name for the Inventory definition.   By default, Inventory definition will be created in Default Resource Group.
 
 
   id (False, str, None)
@@ -64,11 +64,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

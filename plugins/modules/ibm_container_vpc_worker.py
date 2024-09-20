@@ -18,7 +18,7 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_container_vpc_worker' resource
     - This module does not support idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
@@ -28,20 +28,10 @@ options:
         required: False
         type: str
         default: 15m
-    cluster_name:
+    resource_group_id:
         description:
-            - (Required for new resource) Cluster name
-        required: True
-        type: str
-    sds:
-        description:
-            - Name of Software Defined Storage
+            - ID of the resource group.
         required: False
-        type: str
-    replace_worker:
-        description:
-            - (Required for new resource) Worker name/id that needs to be replaced
-        required: True
         type: str
     check_ptx_status:
         description:
@@ -55,14 +45,24 @@ options:
         required: False
         type: str
         default: 15m
-    resource_group_id:
+    replace_worker:
         description:
-            - ID of the resource group.
-        required: False
+            - (Required for new resource) Worker name/id that needs to be replaced
+        required: True
         type: str
     kube_config_path:
         description:
             - Path of downloaded cluster config
+        required: False
+        type: str
+    cluster_name:
+        description:
+            - (Required for new resource) Cluster name
+        required: True
+        type: str
+    sds:
+        description:
+            - Name of Software Defined Storage
         required: False
         type: str
     id:
@@ -91,20 +91,20 @@ author:
 
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
-    ('cluster_name', 'str'),
     ('replace_worker', 'str'),
+    ('cluster_name', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
     'ptx_timeout',
-    'cluster_name',
-    'sds',
-    'replace_worker',
+    'resource_group_id',
     'check_ptx_status',
     'sds_timeout',
-    'resource_group_id',
+    'replace_worker',
     'kube_config_path',
+    'cluster_name',
+    'sds',
 ]
 
 # Params for Data source
@@ -115,8 +115,8 @@ TL_ALL_PARAMETERS_DS = [
 ]
 
 TL_CONFLICTS_MAP = {
-    'sds': ['check_ptx_status'],
     'check_ptx_status': ['sds'],
+    'sds': ['check_ptx_status'],
 }
 
 # define available arguments/parameters a user can pass to the module
@@ -126,13 +126,7 @@ module_args = dict(
     ptx_timeout=dict(
         required=False,
         type='str'),
-    cluster_name=dict(
-        required=False,
-        type='str'),
-    sds=dict(
-        required=False,
-        type='str'),
-    replace_worker=dict(
+    resource_group_id=dict(
         required=False,
         type='str'),
     check_ptx_status=dict(
@@ -141,10 +135,16 @@ module_args = dict(
     sds_timeout=dict(
         required=False,
         type='str'),
-    resource_group_id=dict(
+    replace_worker=dict(
         required=False,
         type='str'),
     kube_config_path=dict(
+        required=False,
+        type='str'),
+    cluster_name=dict(
+        required=False,
+        type='str'),
+    sds=dict(
         required=False,
         type='str'),
     id=dict(
@@ -198,7 +198,7 @@ def run_module():
         resource_type='ibm_container_vpc_worker',
         tf_type='resource',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS,
         tl_all_params=TL_ALL_PARAMETERS)
 

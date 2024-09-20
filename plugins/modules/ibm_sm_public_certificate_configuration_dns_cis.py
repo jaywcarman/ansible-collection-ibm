@@ -18,13 +18,13 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_sm_public_certificate_configuration_dns_cis' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    cloud_internet_services_crn:
+    instance_id:
         description:
-            - (Required for new resource) A CRN that uniquely identifies an IBM Cloud resource.
+            - (Required for new resource) The ID of the Secrets Manager instance.
         required: True
         type: str
     endpoint_type:
@@ -37,20 +37,20 @@ options:
             - An IBM Cloud API key that can to list domains in your Cloud Internet Services instance.To grant Secrets Manager the ability to view the Cloud Internet Services instance and all of its domains, the API key must be assigned the Reader service role on Internet Services (`internet-svcs`).If you need to manage specific domains, you can assign the Manager role. For production environments, it is recommended that you assign the Reader access role, and then use the[IAM Policy Management API](https://cloud.ibm.com/apidocs/iam-policy-management#create-policy) to control specific domains. For more information, see the [docs](https://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-prepare-order-certificates#authorize-specific-domains).
         required: False
         type: str
-    instance_id:
+    cloud_internet_services_crn:
         description:
-            - (Required for new resource) The ID of the Secrets Manager instance.
-        required: True
-        type: str
-    name:
-        description:
-            - (Required for new resource) A human-readable unique name to assign to your configuration.To protect your privacy, do not use personal data, such as your name or location, as an name for your secret.
+            - (Required for new resource) A CRN that uniquely identifies an IBM Cloud resource.
         required: True
         type: str
     region:
         description:
             - The region of the Secrets Manager instance.
         required: False
+        type: str
+    name:
+        description:
+            - (Required for new resource) A human-readable unique name to assign to your configuration.To protect your privacy, do not use personal data, such as your name or location, as an name for your secret.
+        required: True
         type: str
     id:
         description:
@@ -67,15 +67,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -98,32 +97,32 @@ author:
 
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
-    ('cloud_internet_services_crn', 'str'),
     ('instance_id', 'str'),
+    ('cloud_internet_services_crn', 'str'),
     ('name', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'cloud_internet_services_crn',
+    'instance_id',
     'endpoint_type',
     'cloud_internet_services_apikey',
-    'instance_id',
-    'name',
+    'cloud_internet_services_crn',
     'region',
+    'name',
 ]
 
 # Params for Data source
 TL_REQUIRED_PARAMETERS_DS = [
-    ('instance_id', 'str'),
     ('name', 'str'),
+    ('instance_id', 'str'),
 ]
 
 TL_ALL_PARAMETERS_DS = [
-    'instance_id',
     'name',
-    'region',
     'endpoint_type',
+    'instance_id',
+    'region',
 ]
 
 TL_CONFLICTS_MAP = {
@@ -133,7 +132,7 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    cloud_internet_services_crn=dict(
+    instance_id=dict(
         required=False,
         type='str'),
     endpoint_type=dict(
@@ -142,13 +141,13 @@ module_args = dict(
     cloud_internet_services_apikey=dict(
         required=False,
         type='str'),
-    instance_id=dict(
-        required=False,
-        type='str'),
-    name=dict(
+    cloud_internet_services_crn=dict(
         required=False,
         type='str'),
     region=dict(
+        required=False,
+        type='str'),
+    name=dict(
         required=False,
         type='str'),
     id=dict(
@@ -216,7 +215,7 @@ def run_module():
         resource_type='ibm_sm_public_certificate_configuration_dns_cis',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -225,7 +224,7 @@ def run_module():
             resource_type='ibm_sm_public_certificate_configuration_dns_cis',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

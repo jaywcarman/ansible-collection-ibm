@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -35,16 +35,8 @@ Parameters
     Timeout for checking ptx pods/status
 
 
-  cluster_name (True, str, None)
-    (Required for new resource) Cluster name
-
-
-  sds (False, str, None)
-    Name of Software Defined Storage
-
-
-  replace_worker (True, str, None)
-    (Required for new resource) Worker name/id that needs to be replaced
+  resource_group_id (False, str, None)
+    ID of the resource group.
 
 
   check_ptx_status (False, bool, False)
@@ -55,12 +47,20 @@ Parameters
     Timeout for checking sds deployment/status
 
 
-  resource_group_id (False, str, None)
-    ID of the resource group.
+  replace_worker (True, str, None)
+    (Required for new resource) Worker name/id that needs to be replaced
 
 
   kube_config_path (False, str, None)
     Path of downloaded cluster config
+
+
+  cluster_name (True, str, None)
+    (Required for new resource) Cluster name
+
+
+  sds (False, str, None)
+    Name of Software Defined Storage
 
 
   id (False, str, None)

@@ -17,10 +17,15 @@ version_added: "2.8"
 description:
     - Retrieve an IBM Cloud 'ibm_container_ingress_secret_opaque' resource
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
+    secret_namespace:
+        description:
+            - Secret namespace
+        required: True
+        type: str
     cluster:
         description:
             - Cluster ID or name
@@ -29,11 +34,6 @@ options:
     secret_name:
         description:
             - Secret name
-        required: True
-        type: str
-    secret_namespace:
-        description:
-            - Secret namespace
         required: True
         type: str
     ibmcloud_api_key:
@@ -49,16 +49,16 @@ author:
 
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
+    ('secret_namespace', 'str'),
     ('cluster', 'str'),
     ('secret_name', 'str'),
-    ('secret_namespace', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
+    'secret_namespace',
     'cluster',
     'secret_name',
-    'secret_namespace',
 ]
 
 
@@ -69,13 +69,13 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
+    secret_namespace=dict(
+        required=True,
+        type='str'),
     cluster=dict(
         required=True,
         type='str'),
     secret_name=dict(
-        required=True,
-        type='str'),
-    secret_namespace=dict(
         required=True,
         type='str'),
     ibmcloud_api_key=dict(
@@ -98,7 +98,7 @@ def run_module():
         resource_type='ibm_container_ingress_secret_opaque',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS,
         tl_all_params=TL_ALL_PARAMETERS)
 

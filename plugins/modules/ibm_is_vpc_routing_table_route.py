@@ -18,7 +18,7 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_is_vpc_routing_table_route' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
@@ -32,12 +32,33 @@ options:
             - (Required for new resource) If action is deliver, the next hop that packets will be delivered to. For other action values, its address will be 0.0.0.0.
         required: True
         type: str
+    priority:
+        description:
+            - The route's priority. Smaller values have higher priority.
+        required: False
+        type: int
+    destination:
+        description:
+            - (Required for new resource) The destination of the route.
+        required: True
+        type: str
     action:
         description:
             - The action to perform with a packet matching the route.
         required: False
         type: str
         default: deliver
+    vpc:
+        description:
+            - (Required for new resource) The VPC identifier.
+        required: True
+        type: str
+    advertise:
+        description:
+            - Indicates whether this route will be advertised to the ingress sources specified by the `advertise_routes_to` routing table property.
+        required: False
+        type: bool
+        default: False
     name:
         description:
             - The user-defined name for this route.
@@ -48,27 +69,6 @@ options:
             - (Required for new resource) The zone to apply the route to. Traffic from subnets in this zone will be subject to this route.
         required: True
         type: str
-    vpc:
-        description:
-            - (Required for new resource) The VPC identifier.
-        required: True
-        type: str
-    destination:
-        description:
-            - (Required for new resource) The destination of the route.
-        required: True
-        type: str
-    advertise:
-        description:
-            - Indicates whether this route will be advertised to the ingress sources specified by the `advertise_routes_to` routing table property.
-        required: False
-        type: bool
-        default: False
-    priority:
-        description:
-            - The route's priority. Smaller values have higher priority.
-        required: False
-        type: int
     id:
         description:
             - (Required when updating or destroying existing resource) IBM Cloud Resource ID.
@@ -82,17 +82,6 @@ options:
             - absent
         default: available
         required: False
-    generation:
-        description:
-            - The generation of Virtual Private Cloud infrastructure
-              that you want to use. Supported values are 1 for VPC
-              generation 1, and 2 for VPC generation 2 infrastructure.
-              If this value is not specified, 2 is used by default. This
-              can also be provided via the environment variable
-              'IC_GENERATION'.
-        default: 2
-        required: False
-        type: int
     region:
         description:
             - The IBM Cloud region where you want to create your
@@ -117,22 +106,22 @@ author:
 TL_REQUIRED_PARAMETERS = [
     ('routing_table', 'str'),
     ('next_hop', 'str'),
-    ('zone', 'str'),
-    ('vpc', 'str'),
     ('destination', 'str'),
+    ('vpc', 'str'),
+    ('zone', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
     'routing_table',
     'next_hop',
+    'priority',
+    'destination',
     'action',
+    'vpc',
+    'advertise',
     'name',
     'zone',
-    'vpc',
-    'destination',
-    'advertise',
-    'priority',
 ]
 
 # Params for Data source
@@ -143,9 +132,9 @@ TL_REQUIRED_PARAMETERS_DS = [
 
 TL_ALL_PARAMETERS_DS = [
     'vpc',
-    'routing_table',
     'route_id',
     'name',
+    'routing_table',
 ]
 
 TL_CONFLICTS_MAP = {
@@ -161,27 +150,27 @@ module_args = dict(
     next_hop=dict(
         required=False,
         type='str'),
+    priority=dict(
+        required=False,
+        type='int'),
+    destination=dict(
+        required=False,
+        type='str'),
     action=dict(
         required=False,
         type='str'),
+    vpc=dict(
+        required=False,
+        type='str'),
+    advertise=dict(
+        required=False,
+        type='bool'),
     name=dict(
         required=False,
         type='str'),
     zone=dict(
         required=False,
         type='str'),
-    vpc=dict(
-        required=False,
-        type='str'),
-    destination=dict(
-        required=False,
-        type='str'),
-    advertise=dict(
-        required=False,
-        type='bool'),
-    priority=dict(
-        required=False,
-        type='int'),
     id=dict(
         required=False,
         type='str'),
@@ -190,11 +179,6 @@ module_args = dict(
         required=False,
         default='available',
         choices=(['available', 'absent'])),
-    generation=dict(
-        type='int',
-        required=False,
-        fallback=(env_fallback, ['IC_GENERATION']),
-        default=2),
     region=dict(
         type='str',
         fallback=(env_fallback, ['IC_REGION']),
@@ -238,28 +222,29 @@ def run_module():
     if len(conflicts):
         module.fail_json(msg=("conflicts exist: {}".format(conflicts)))
 
-    # VPC required arguments checks
-    if module.params['generation'] == 1:
-        missing_args = []
-        if module.params['iaas_classic_username'] is None:
-            missing_args.append('iaas_classic_username')
-        if module.params['iaas_classic_api_key'] is None:
-            missing_args.append('iaas_classic_api_key')
-        if missing_args:
-            module.fail_json(msg=(
-                "VPC generation=1 missing required arguments: " +
-                ", ".join(missing_args)))
-    elif module.params['generation'] == 2:
-        if module.params['ibmcloud_api_key'] is None:
-            module.fail_json(
-                msg=("VPC generation=2 missing required argument: "
-                     "ibmcloud_api_key"))
+    if 'generation' in module.params:
+        # VPC required arguments checks
+        if module.params['generation'] == 1:
+            missing_args = []
+            if module.params['iaas_classic_username'] is None:
+                missing_args.append('iaas_classic_username')
+            if module.params['iaas_classic_api_key'] is None:
+                missing_args.append('iaas_classic_api_key')
+            if missing_args:
+                module.fail_json(msg=(
+                    "VPC generation=1 missing required arguments: " +
+                    ", ".join(missing_args)))
+        elif module.params['generation'] == 2:
+            if module.params['ibmcloud_api_key'] is None:
+                module.fail_json(
+                    msg=("VPC generation=2 missing required argument: "
+                         "ibmcloud_api_key"))
 
     result_ds = ibmcloud_terraform(
         resource_type='ibm_is_vpc_routing_table_route',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -268,7 +253,7 @@ def run_module():
             resource_type='ibm_is_vpc_routing_table_route',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

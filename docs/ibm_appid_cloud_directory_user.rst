@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,36 +31,36 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  display_name (False, str, None)
-    Cloud Directory user display name
-
-
   password (True, str, None)
     (Required for new resource) User password
-
-
-  status (False, str, PENDING)
-    Accepted values `PENDING` or `CONFIRMED`
 
 
   tenant_id (True, str, None)
     (Required for new resource) The AppID instance GUID
 
 
-  create_profile (False, bool, True)
-    A boolean indication if a profile should be created for the Cloud Directory user
+  active (False, bool, True)
+    Determines if the user account is active or not
 
 
   locked_until (False, int, None)
     Integer (epoch time in milliseconds), determines till when the user account will be locked
 
 
-  active (False, bool, True)
-    Determines if the user account is active or not
+  display_name (False, str, None)
+    Cloud Directory user display name
+
+
+  create_profile (False, bool, True)
+    A boolean indication if a profile should be created for the Cloud Directory user
 
 
   user_name (False, str, None)
     Optional username
+
+
+  status (False, str, PENDING)
+    Accepted values `PENDING` or `CONFIRMED`
 
 
   email (True, list, None)
@@ -76,11 +76,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

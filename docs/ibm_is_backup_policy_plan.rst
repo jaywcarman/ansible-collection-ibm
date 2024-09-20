@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,8 +31,16 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  cron_spec (True, str, None)
-    (Required for new resource) The cron specification for the backup schedule.
+  active (False, bool, None)
+    Indicates whether the plan is active.
+
+
+  copy_user_tags (False, bool, True)
+    Indicates whether to copy the source's user tags to the created backups (snapshots).
+
+
+  deletion_trigger (False, list, None)
+    None
 
 
   name (False, str, None)
@@ -43,28 +51,20 @@ Parameters
     (Required for new resource) The backup policy identifier.
 
 
-  active (False, bool, None)
-    Indicates whether the plan is active.
+  cron_spec (True, str, None)
+    (Required for new resource) The cron specification for the backup schedule.
 
 
-  clone_policy (False, list, None)
-    None
+  remote_region_policy (False, list, None)
+    Backup policy plan cross region rule.
 
 
   attach_user_tags (False, list, None)
     User tags to attach to each backup (snapshot) created by this plan. If unspecified, no user tags will be attached.
 
 
-  deletion_trigger (False, list, None)
+  clone_policy (False, list, None)
     None
-
-
-  copy_user_tags (False, bool, True)
-    Indicates whether to copy the source's user tags to the created backups (snapshots).
-
-
-  remote_region_policy (False, list, None)
-    Backup policy plan cross region rule.
 
 
   id (False, str, None)
@@ -73,10 +73,6 @@ Parameters
 
   state (False, any, available)
     State of resource
-
-
-  generation (False, int, 2)
-    The generation of Virtual Private Cloud infrastructure that you want to use. Supported values are 1 for VPC generation 1, and 2 for VPC generation 2 infrastructure. If this value is not specified, 2 is used by default. This can also be provided via the environment variable 'IC_GENERATION'.
 
 
   region (False, str, us-south)

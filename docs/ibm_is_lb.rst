@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,40 +31,12 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  type (False, str, public)
-    Load Balancer type
-
-
-  subnets (True, list, None)
-    (Required for new resource) Load Balancer subnets list
-
-
   security_groups (False, list, None)
     Load Balancer securitygroups list
 
 
-  profile (False, str, None)
-    The profile to use for this load balancer.
-
-
-  tags (False, list, None)
-    None
-
-
   access_tags (False, list, None)
     List of access management tags
-
-
-  route_mode (False, bool, False)
-    Indicates whether route mode is enabled for this load balancer
-
-
-  name (True, str, None)
-    (Required for new resource) Load Balancer name
-
-
-  dns (False, list, None)
-    The DNS configuration for this load balancer.
 
 
   resource_group (False, str, None)
@@ -75,16 +47,40 @@ Parameters
     Logging of Load Balancer
 
 
+  type (False, str, public)
+    Load Balancer type
+
+
+  dns (False, list, None)
+    The DNS configuration for this load balancer.
+
+
+  profile (False, str, None)
+    The profile to use for this load balancer.
+
+
+  route_mode (False, bool, False)
+    Indicates whether route mode is enabled for this load balancer
+
+
+  name (True, str, None)
+    (Required for new resource) Load Balancer name
+
+
+  subnets (True, list, None)
+    (Required for new resource) Load Balancer subnets list
+
+
+  tags (False, list, None)
+    None
+
+
   id (False, str, None)
     (Required when updating or destroying existing resource) IBM Cloud Resource ID.
 
 
   state (False, any, available)
     State of resource
-
-
-  generation (False, int, 2)
-    The generation of Virtual Private Cloud infrastructure that you want to use. Supported values are 1 for VPC generation 1, and 2 for VPC generation 2 infrastructure. If this value is not specified, 2 is used by default. This can also be provided via the environment variable 'IC_GENERATION'.
 
 
   region (False, str, us-south)

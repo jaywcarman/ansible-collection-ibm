@@ -18,10 +18,21 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_is_vpn_gateway_connection' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
+    vpn_gateway:
+        description:
+            - (Required for new resource) VPN Gateway info
+        required: True
+        type: str
+    establish_mode:
+        description:
+            - The establish mode of the VPN gateway connection:- `bidirectional`: Either side of the VPN gateway can initiate IKE protocol   negotiations or rekeying processes.- `peer_only`: Only the peer can initiate IKE protocol negotiations for this VPN gateway   connection. Additionally, the peer is responsible for initiating the rekeying process   after the connection is established. If rekeying does not occur, the VPN gateway   connection will be brought down after its lifetime expires.
+        required: False
+        type: str
+        default: bidirectional
     ipsec_policy:
         description:
             - IP security policy for vpn gateway connection
@@ -32,44 +43,28 @@ options:
             - VPN gateway connection IKE Policy
         required: False
         type: str
-    name:
+    peer:
         description:
-            - (Required for new resource) VPN Gateway connection name
-        required: True
-        type: str
-    peer_address:
-        description:
-            - (Required for new resource) VPN gateway connection peer address
-        required: True
-        type: str
-    local_cidrs:
-        description:
-            - VPN gateway connection local CIDRs
+            - None
         required: False
         type: list
-        elements: str
-    peer_cidrs:
-        description:
-            - VPN gateway connection peer CIDRs
-        required: False
-        type: list
-        elements: str
-    vpn_gateway:
-        description:
-            - (Required for new resource) VPN Gateway info
-        required: True
-        type: str
+        elements: dict
     preshared_key:
         description:
             - (Required for new resource) vpn gateway
         required: True
         type: str
-    admin_state_up:
+    name:
         description:
-            - VPN gateway connection admin state
+            - (Required for new resource) VPN Gateway connection name
+        required: True
+        type: str
+    local:
+        description:
+            - None
         required: False
-        type: bool
-        default: False
+        type: list
+        elements: dict
     action:
         description:
             - Action detection for dead peer detection action
@@ -88,6 +83,11 @@ options:
         required: False
         type: int
         default: 10
+    admin_state_up:
+        description:
+            - VPN gateway connection admin state
+        required: False
+        type: bool
     id:
         description:
             - (Required when updating or destroying existing resource) IBM Cloud Resource ID.
@@ -101,17 +101,6 @@ options:
             - absent
         default: available
         required: False
-    generation:
-        description:
-            - The generation of Virtual Private Cloud infrastructure
-              that you want to use. Supported values are 1 for VPC
-              generation 1, and 2 for VPC generation 2 infrastructure.
-              If this value is not specified, 2 is used by default. This
-              can also be provided via the environment variable
-              'IC_GENERATION'.
-        default: 2
-        required: False
-        type: int
     region:
         description:
             - The IBM Cloud region where you want to create your
@@ -134,26 +123,25 @@ author:
 
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
-    ('name', 'str'),
-    ('peer_address', 'str'),
     ('vpn_gateway', 'str'),
     ('preshared_key', 'str'),
+    ('name', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
+    'vpn_gateway',
+    'establish_mode',
     'ipsec_policy',
     'ike_policy',
-    'name',
-    'peer_address',
-    'local_cidrs',
-    'peer_cidrs',
-    'vpn_gateway',
+    'peer',
     'preshared_key',
-    'admin_state_up',
+    'name',
+    'local',
     'action',
     'interval',
     'timeout',
+    'admin_state_up',
 ]
 
 # Params for Data source
@@ -161,10 +149,10 @@ TL_REQUIRED_PARAMETERS_DS = [
 ]
 
 TL_ALL_PARAMETERS_DS = [
-    'vpn_gateway_connection_name',
     'vpn_gateway_connection',
-    'vpn_gateway_name',
     'vpn_gateway',
+    'vpn_gateway_name',
+    'vpn_gateway_connection_name',
 ]
 
 TL_CONFLICTS_MAP = {
@@ -174,35 +162,32 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
+    vpn_gateway=dict(
+        required=False,
+        type='str'),
+    establish_mode=dict(
+        required=False,
+        type='str'),
     ipsec_policy=dict(
         required=False,
         type='str'),
     ike_policy=dict(
         required=False,
         type='str'),
-    name=dict(
-        required=False,
-        type='str'),
-    peer_address=dict(
-        required=False,
-        type='str'),
-    local_cidrs=dict(
+    peer=dict(
         required=False,
         elements='',
         type='list'),
-    peer_cidrs=dict(
-        required=False,
-        elements='',
-        type='list'),
-    vpn_gateway=dict(
-        required=False,
-        type='str'),
     preshared_key=dict(
         required=False,
         type='str'),
-    admin_state_up=dict(
+    name=dict(
         required=False,
-        type='bool'),
+        type='str'),
+    local=dict(
+        required=False,
+        elements='',
+        type='list'),
     action=dict(
         required=False,
         type='str'),
@@ -212,6 +197,9 @@ module_args = dict(
     timeout=dict(
         required=False,
         type='int'),
+    admin_state_up=dict(
+        required=False,
+        type='bool'),
     id=dict(
         required=False,
         type='str'),
@@ -220,11 +208,6 @@ module_args = dict(
         required=False,
         default='available',
         choices=(['available', 'absent'])),
-    generation=dict(
-        type='int',
-        required=False,
-        fallback=(env_fallback, ['IC_GENERATION']),
-        default=2),
     region=dict(
         type='str',
         fallback=(env_fallback, ['IC_REGION']),
@@ -268,28 +251,29 @@ def run_module():
     if len(conflicts):
         module.fail_json(msg=("conflicts exist: {}".format(conflicts)))
 
-    # VPC required arguments checks
-    if module.params['generation'] == 1:
-        missing_args = []
-        if module.params['iaas_classic_username'] is None:
-            missing_args.append('iaas_classic_username')
-        if module.params['iaas_classic_api_key'] is None:
-            missing_args.append('iaas_classic_api_key')
-        if missing_args:
-            module.fail_json(msg=(
-                "VPC generation=1 missing required arguments: " +
-                ", ".join(missing_args)))
-    elif module.params['generation'] == 2:
-        if module.params['ibmcloud_api_key'] is None:
-            module.fail_json(
-                msg=("VPC generation=2 missing required argument: "
-                     "ibmcloud_api_key"))
+    if 'generation' in module.params:
+        # VPC required arguments checks
+        if module.params['generation'] == 1:
+            missing_args = []
+            if module.params['iaas_classic_username'] is None:
+                missing_args.append('iaas_classic_username')
+            if module.params['iaas_classic_api_key'] is None:
+                missing_args.append('iaas_classic_api_key')
+            if missing_args:
+                module.fail_json(msg=(
+                    "VPC generation=1 missing required arguments: " +
+                    ", ".join(missing_args)))
+        elif module.params['generation'] == 2:
+            if module.params['ibmcloud_api_key'] is None:
+                module.fail_json(
+                    msg=("VPC generation=2 missing required argument: "
+                         "ibmcloud_api_key"))
 
     result_ds = ibmcloud_terraform(
         resource_type='ibm_is_vpn_gateway_connection',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -298,7 +282,7 @@ def run_module():
             resource_type='ibm_is_vpn_gateway_connection',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

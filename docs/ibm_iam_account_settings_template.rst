@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,24 +31,24 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
+  account_settings (False, list, None)
+    None
+
+
   name (False, str, None)
     The name of the trusted profile template. This is visible only in the enterprise account.
 
 
-  description (False, str, None)
-    The description of the trusted profile template. Describe the template for enterprise account users.
+  template_id (False, str, None)
+    ID of the the template.
 
 
   committed (False, bool, None)
     Committed flag determines if the template is ready for assignment.
 
 
-  account_settings (False, list, None)
-    None
-
-
-  template_id (False, str, None)
-    ID of the the template.
+  description (False, str, None)
+    The description of the trusted profile template. Describe the template for enterprise account users.
 
 
   id (False, str, None)
@@ -60,11 +60,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

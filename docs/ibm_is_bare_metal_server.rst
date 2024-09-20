@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,12 +31,56 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  tags (False, list, None)
-    Tags for the Bare metal server
+  zone (True, str, None)
+    (Required for new resource) Zone name
+
+
+  user_data (False, str, None)
+    User data given for the bare metal server
 
 
   delete_type (False, str, hard)
     Enables stopping type of the bare metal server before deleting
+
+
+  primary_network_attachment (False, list, None)
+    The primary network attachment.
+
+
+  primary_network_interface (False, list, None)
+    Primary Network interface info
+
+
+  network_interfaces (False, list, None)
+    None
+
+
+  trusted_platform_module (False, list, None)
+    None
+
+
+  image (True, str, None)
+    (Required for new resource) image id
+
+
+  name (False, str, None)
+    Bare metal server name
+
+
+  profile (True, str, None)
+    (Required for new resource) profile name
+
+
+  access_tags (False, list, None)
+    List of access management tags
+
+
+  bandwidth (False, int, None)
+    The total bandwidth (in megabits per second)
+
+
+  action (False, str, None)
+    This restart/start/stops a bare metal server.
 
 
   network_attachments (False, list, None)
@@ -47,34 +91,6 @@ Parameters
     (Required for new resource) SSH key Ids for the bare metal server
 
 
-  action (False, str, None)
-    This restart/start/stops a bare metal server.
-
-
-  network_interfaces (False, list, None)
-    None
-
-
-  profile (True, str, None)
-    (Required for new resource) profile name
-
-
-  zone (True, str, None)
-    (Required for new resource) Zone name
-
-
-  primary_network_interface (False, list, None)
-    Primary Network interface info
-
-
-  name (False, str, None)
-    Bare metal server name
-
-
-  enable_secure_boot (False, bool, None)
-    Indicates whether secure boot is enabled. If enabled, the image must support secure boot or the server will fail to boot.
-
-
   vpc (False, str, None)
     The VPC the bare metal server is to be a part of
 
@@ -83,24 +99,12 @@ Parameters
     Resource group name
 
 
-  access_tags (False, list, None)
-    List of access management tags
+  tags (False, list, None)
+    Tags for the Bare metal server
 
 
-  primary_network_attachment (False, list, None)
-    The primary network attachment.
-
-
-  trusted_platform_module (False, list, None)
-    None
-
-
-  user_data (False, str, None)
-    User data given for the bare metal server
-
-
-  image (True, str, None)
-    (Required for new resource) image id
+  enable_secure_boot (False, bool, None)
+    Indicates whether secure boot is enabled. If enabled, the image must support secure boot or the server will fail to boot.
 
 
   id (False, str, None)
@@ -109,10 +113,6 @@ Parameters
 
   state (False, any, available)
     State of resource
-
-
-  generation (False, int, 2)
-    The generation of Virtual Private Cloud infrastructure that you want to use. Supported values are 1 for VPC generation 1, and 2 for VPC generation 2 infrastructure. If this value is not specified, 2 is used by default. This can also be provided via the environment variable 'IC_GENERATION'.
 
 
   region (False, str, us-south)

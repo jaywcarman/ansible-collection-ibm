@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,20 +31,12 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  region (False, any, us-south)
-    The IBM Cloud region where you want to create your resources. If this value is not specified, us-south is used by default. This can also be provided via the environment variable 'IC_REGION'.
+  data (True, dict, None)
+    (Required for new resource) The payload data of a key-value secret.
 
 
   endpoint_type (False, str, None)
     public or private.
-
-
-  secret_group_id (False, str, None)
-    A v4 UUID identifier, or `default` secret group.
-
-
-  custom_metadata (False, dict, None)
-    The secret metadata that a user can customize.
 
 
   name (True, str, None)
@@ -55,20 +47,28 @@ Parameters
     Labels that you can use to search for secrets in your instance.Up to 30 labels can be created.
 
 
-  data (True, dict, None)
-    (Required for new resource) The payload data of a key-value secret.
+  custom_metadata (False, dict, None)
+    The secret metadata that a user can customize.
+
+
+  version_custom_metadata (False, dict, None)
+    The secret version metadata that a user can customize.
 
 
   instance_id (True, str, None)
     (Required for new resource) The ID of the Secrets Manager instance.
 
 
+  region (False, any, us-south)
+    The IBM Cloud region where you want to create your resources. If this value is not specified, us-south is used by default. This can also be provided via the environment variable 'IC_REGION'.
+
+
   description (False, str, None)
     An extended description of your secret.To protect your privacy, do not use personal data, such as your name or location, as a description for your secret group.
 
 
-  version_custom_metadata (False, dict, None)
-    The secret version metadata that a user can customize.
+  secret_group_id (False, str, None)
+    A v4 UUID identifier, or `default` secret group.
 
 
   id (False, str, None)
@@ -80,11 +80,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   ibmcloud_api_key (True, any, None)

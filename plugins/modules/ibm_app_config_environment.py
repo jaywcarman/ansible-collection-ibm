@@ -18,7 +18,7 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_app_config_environment' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
@@ -26,16 +26,6 @@ options:
         description:
             - (Required for new resource) GUID of the App Configuration service. Get it from the service instance credentials section of the dashboard.
         required: True
-        type: str
-    tags:
-        description:
-            - Tags associated with the environment
-        required: False
-        type: str
-    color_code:
-        description:
-            - Color code to distinguish the environment.
-        required: False
         type: str
     name:
         description:
@@ -47,9 +37,19 @@ options:
             - (Required for new resource) Environment Id.
         required: True
         type: str
+    color_code:
+        description:
+            - Color code to distinguish the environment.
+        required: False
+        type: str
     description:
         description:
             - Environment description
+        required: False
+        type: str
+    tags:
+        description:
+            - Tags associated with the environment
         required: False
         type: str
     id:
@@ -67,15 +67,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -106,11 +105,11 @@ TL_REQUIRED_PARAMETERS = [
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
     'guid',
-    'tags',
-    'color_code',
     'name',
     'environment_id',
+    'color_code',
     'description',
+    'tags',
 ]
 
 # Params for Data source
@@ -121,8 +120,8 @@ TL_REQUIRED_PARAMETERS_DS = [
 
 TL_ALL_PARAMETERS_DS = [
     'guid',
-    'environment_id',
     'expand',
+    'environment_id',
 ]
 
 TL_CONFLICTS_MAP = {
@@ -135,19 +134,19 @@ module_args = dict(
     guid=dict(
         required=False,
         type='str'),
-    tags=dict(
-        required=False,
-        type='str'),
-    color_code=dict(
-        required=False,
-        type='str'),
     name=dict(
         required=False,
         type='str'),
     environment_id=dict(
         required=False,
         type='str'),
+    color_code=dict(
+        required=False,
+        type='str'),
     description=dict(
+        required=False,
+        type='str'),
+    tags=dict(
         required=False,
         type='str'),
     id=dict(
@@ -215,7 +214,7 @@ def run_module():
         resource_type='ibm_app_config_environment',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -224,7 +223,7 @@ def run_module():
             resource_type='ibm_app_config_environment',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

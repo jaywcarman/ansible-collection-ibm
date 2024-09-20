@@ -18,10 +18,53 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_sm_public_certificate' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
+    secret_group_id:
+        description:
+            - A v4 UUID identifier, or `default` secret group.
+        required: False
+        type: str
+    name:
+        description:
+            - (Required for new resource) A human-readable name to assign to your secret.To protect your privacy, do not use personal data, such as your name or location, as a name for your secret.
+        required: True
+        type: str
+    labels:
+        description:
+            - Labels that you can use to search for secrets in your instance.Up to 30 labels can be created.
+        required: False
+        type: list
+        elements: str
+    version_custom_metadata:
+        description:
+            - The secret version metadata that a user can customize.
+        required: False
+        type: dict
+        elements: str
+    region:
+        description:
+            - The region of the Secrets Manager instance.
+        required: False
+        type: str
+    common_name:
+        description:
+            - (Required for new resource) The Common Name (AKA CN) represents the server name that is protected by the SSL certificate.
+        required: True
+        type: str
+    key_algorithm:
+        description:
+            - The identifier for the cryptographic algorithm to be used to generate the public key that is associated with the certificate.The algorithm that you select determines the encryption algorithm (`RSA` or `ECDSA`) and key size to be used to generate keys and sign certificates. For longer living certificates, it is recommended to use longer keys to provide more encryption protection. Allowed values:  RSA2048, RSA4096, EC256, EC384.
+        required: False
+        type: str
+        default: RSA2048
+    ca:
+        description:
+            - (Required for new resource) The name of the certificate authority configuration.
+        required: True
+        type: str
     custom_metadata:
         description:
             - The secret metadata that a user can customize.
@@ -31,17 +74,6 @@ options:
     endpoint_type:
         description:
             - public or private.
-        required: False
-        type: str
-    labels:
-        description:
-            - Labels that you can use to search for secrets in your instance.Up to 30 labels can be created.
-        required: False
-        type: list
-        elements: str
-    region:
-        description:
-            - The region of the Secrets Manager instance.
         required: False
         type: str
     description:
@@ -55,41 +87,20 @@ options:
         required: False
         type: list
         elements: str
-    version_custom_metadata:
+    dns:
         description:
-            - The secret version metadata that a user can customize.
-        required: False
-        type: dict
-        elements: str
-    secret_group_id:
-        description:
-            - A v4 UUID identifier, or `default` secret group.
-        required: False
-        type: str
-    key_algorithm:
-        description:
-            - The identifier for the cryptographic algorithm to be used to generate the public key that is associated with the certificate.The algorithm that you select determines the encryption algorithm (`RSA` or `ECDSA`) and key size to be used to generate keys and sign certificates. For longer living certificates, it is recommended to use longer keys to provide more encryption protection. Allowed values:  RSA2048, RSA4096, EC256, EC384.
-        required: False
-        type: str
-        default: RSA2048
-    name:
-        description:
-            - (Required for new resource) A human-readable name to assign to your secret.To protect your privacy, do not use personal data, such as your name or location, as a name for your secret.
-        required: True
-        type: str
-    common_name:
-        description:
-            - (Required for new resource) The Common Name (AKA CN) represents the server name that is protected by the SSL certificate.
-        required: True
-        type: str
-    ca:
-        description:
-            - (Required for new resource) The name of the certificate authority configuration.
+            - (Required for new resource) The name of the DNS provider configuration.
         required: True
         type: str
     rotation:
         description:
             - Determines whether Secrets Manager rotates your secrets automatically.
+        required: False
+        type: list
+        elements: dict
+    akamai:
+        description:
+            - None
         required: False
         type: list
         elements: dict
@@ -99,17 +110,6 @@ options:
         required: False
         type: bool
         default: True
-    akamai:
-        description:
-            - None
-        required: False
-        type: list
-        elements: dict
-    dns:
-        description:
-            - (Required for new resource) The name of the DNS provider configuration.
-        required: True
-        type: str
     instance_id:
         description:
             - (Required for new resource) The ID of the Secrets Manager instance.
@@ -130,15 +130,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -170,22 +169,22 @@ TL_REQUIRED_PARAMETERS = [
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
+    'secret_group_id',
+    'name',
+    'labels',
+    'version_custom_metadata',
+    'region',
+    'common_name',
+    'key_algorithm',
+    'ca',
     'custom_metadata',
     'endpoint_type',
-    'labels',
-    'region',
     'description',
     'alt_names',
-    'version_custom_metadata',
-    'secret_group_id',
-    'key_algorithm',
-    'name',
-    'common_name',
-    'ca',
-    'rotation',
-    'bundle_certs',
-    'akamai',
     'dns',
+    'rotation',
+    'akamai',
+    'bundle_certs',
     'instance_id',
 ]
 
@@ -195,12 +194,12 @@ TL_REQUIRED_PARAMETERS_DS = [
 ]
 
 TL_ALL_PARAMETERS_DS = [
+    'endpoint_type',
+    'instance_id',
+    'secret_id',
+    'name',
     'region',
     'secret_group_name',
-    'name',
-    'secret_id',
-    'instance_id',
-    'endpoint_type',
 ]
 
 TL_CONFLICTS_MAP = {
@@ -210,18 +209,37 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    custom_metadata=dict(
+    secret_group_id=dict(
         required=False,
-        elements='',
-        type='dict'),
-    endpoint_type=dict(
+        type='str'),
+    name=dict(
         required=False,
         type='str'),
     labels=dict(
         required=False,
         elements='',
         type='list'),
+    version_custom_metadata=dict(
+        required=False,
+        elements='',
+        type='dict'),
     region=dict(
+        required=False,
+        type='str'),
+    common_name=dict(
+        required=False,
+        type='str'),
+    key_algorithm=dict(
+        required=False,
+        type='str'),
+    ca=dict(
+        required=False,
+        type='str'),
+    custom_metadata=dict(
+        required=False,
+        elements='',
+        type='dict'),
+    endpoint_type=dict(
         required=False,
         type='str'),
     description=dict(
@@ -231,39 +249,20 @@ module_args = dict(
         required=False,
         elements='',
         type='list'),
-    version_custom_metadata=dict(
-        required=False,
-        elements='',
-        type='dict'),
-    secret_group_id=dict(
-        required=False,
-        type='str'),
-    key_algorithm=dict(
-        required=False,
-        type='str'),
-    name=dict(
-        required=False,
-        type='str'),
-    common_name=dict(
-        required=False,
-        type='str'),
-    ca=dict(
+    dns=dict(
         required=False,
         type='str'),
     rotation=dict(
         required=False,
         elements='',
         type='list'),
-    bundle_certs=dict(
-        required=False,
-        type='bool'),
     akamai=dict(
         required=False,
         elements='',
         type='list'),
-    dns=dict(
+    bundle_certs=dict(
         required=False,
-        type='str'),
+        type='bool'),
     instance_id=dict(
         required=False,
         type='str'),
@@ -332,7 +331,7 @@ def run_module():
         resource_type='ibm_sm_public_certificate',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -341,7 +340,7 @@ def run_module():
             resource_type='ibm_sm_public_certificate',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

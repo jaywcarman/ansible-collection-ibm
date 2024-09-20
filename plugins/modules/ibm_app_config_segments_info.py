@@ -17,10 +17,20 @@ version_added: "2.8"
 description:
     - Retrieve an IBM Cloud 'ibm_app_config_segments' resource
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
+    tags:
+        description:
+            - Filter the resources to be returned based on the associated tags.
+        required: False
+        type: str
+    expand:
+        description:
+            - If set to `true`, returns expanded view of the resource details.
+        required: False
+        type: bool
     guid:
         description:
             - GUID of the App Configuration service. Get it from the service instance credentials section of the dashboard.
@@ -41,16 +51,6 @@ options:
             - The number of records to retrieve. By default, the list operation return the first 10 records. To retrieve different set of records, use `limit` with `offset` to page through the available records.
         required: False
         type: int
-    tags:
-        description:
-            - Filter the resources to be returned based on the associated tags.
-        required: False
-        type: str
-    expand:
-        description:
-            - If set to `true`, returns expanded view of the resource details.
-        required: False
-        type: bool
     total_count:
         description:
             - Total number of records.
@@ -63,15 +63,14 @@ options:
         type: int
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -99,12 +98,12 @@ TL_REQUIRED_PARAMETERS = [
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
+    'tags',
+    'expand',
     'guid',
     'sort',
     'include',
     'limit',
-    'tags',
-    'expand',
     'total_count',
     'offset',
 ]
@@ -117,6 +116,12 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
+    tags=dict(
+        required=False,
+        type='str'),
+    expand=dict(
+        required=False,
+        type='bool'),
     guid=dict(
         required=True,
         type='str'),
@@ -129,12 +134,6 @@ module_args = dict(
     limit=dict(
         required=False,
         type='int'),
-    tags=dict(
-        required=False,
-        type='str'),
-    expand=dict(
-        required=False,
-        type='bool'),
     total_count=dict(
         required=False,
         type='int'),
@@ -175,7 +174,7 @@ def run_module():
         resource_type='ibm_app_config_segments',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS,
         tl_all_params=TL_ALL_PARAMETERS)
 

@@ -18,53 +18,38 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_dns_resource_record' resource
     - This module does not support idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    rdata:
-        description:
-            - (Required for new resource) DNS record Data
-        required: True
-        type: str
-    ttl:
-        description:
-            - DNS record TTL
-        required: False
-        type: int
-        default: 900
-    preference:
-        description:
-            - DNS maximum preference
-        required: False
-        type: int
-        default: 0
-    port:
-        description:
-            - DNS server Port
-        required: False
-        type: int
     priority:
         description:
             - DNS server Priority
         required: False
         type: int
         default: 0
-    protocol:
+    rdata:
         description:
-            - Protocol
-        required: False
+            - (Required for new resource) DNS record Data
+        required: True
         type: str
     zone_id:
         description:
             - (Required for new resource) Zone ID
         required: True
         type: str
-    instance_id:
+    preference:
         description:
-            - (Required for new resource) Instance ID
-        required: True
-        type: str
+            - DNS maximum preference
+        required: False
+        type: int
+        default: 0
+    ttl:
+        description:
+            - DNS record TTL
+        required: False
+        type: int
+        default: 900
     name:
         description:
             - (Required for new resource) DNS record name
@@ -75,6 +60,11 @@ options:
             - (Required for new resource) DNS record Type
         required: True
         type: str
+    port:
+        description:
+            - DNS server Port
+        required: False
+        type: int
     weight:
         description:
             - DNS server weight
@@ -85,6 +75,16 @@ options:
         description:
             - Service info
         required: False
+        type: str
+    protocol:
+        description:
+            - Protocol
+        required: False
+        type: str
+    instance_id:
+        description:
+            - (Required for new resource) Instance ID
+        required: True
         type: str
     id:
         description:
@@ -101,15 +101,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -134,25 +133,25 @@ author:
 TL_REQUIRED_PARAMETERS = [
     ('rdata', 'str'),
     ('zone_id', 'str'),
-    ('instance_id', 'str'),
     ('name', 'str'),
     ('type', 'str'),
+    ('instance_id', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'rdata',
-    'ttl',
-    'preference',
-    'port',
     'priority',
-    'protocol',
+    'rdata',
     'zone_id',
-    'instance_id',
+    'preference',
+    'ttl',
     'name',
     'type',
+    'port',
     'weight',
     'service',
+    'protocol',
+    'instance_id',
 ]
 
 # Params for Data source
@@ -169,40 +168,40 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    rdata=dict(
-        required=False,
-        type='str'),
-    ttl=dict(
-        required=False,
-        type='int'),
-    preference=dict(
-        required=False,
-        type='int'),
-    port=dict(
-        required=False,
-        type='int'),
     priority=dict(
         required=False,
         type='int'),
-    protocol=dict(
+    rdata=dict(
         required=False,
         type='str'),
     zone_id=dict(
         required=False,
         type='str'),
-    instance_id=dict(
+    preference=dict(
         required=False,
-        type='str'),
+        type='int'),
+    ttl=dict(
+        required=False,
+        type='int'),
     name=dict(
         required=False,
         type='str'),
     type=dict(
         required=False,
         type='str'),
+    port=dict(
+        required=False,
+        type='int'),
     weight=dict(
         required=False,
         type='int'),
     service=dict(
+        required=False,
+        type='str'),
+    protocol=dict(
+        required=False,
+        type='str'),
+    instance_id=dict(
         required=False,
         type='str'),
     id=dict(
@@ -270,7 +269,7 @@ def run_module():
         resource_type='ibm_dns_resource_record',
         tf_type='resource',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS,
         tl_all_params=TL_ALL_PARAMETERS)
 

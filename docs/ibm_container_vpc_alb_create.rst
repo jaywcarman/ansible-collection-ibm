@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,16 +31,8 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  resource_group_id (False, str, None)
-    ID of the resource group.
-
-
   enable (False, bool, None)
     Enable the ALB instance in the cluster
-
-
-  type (True, str, None)
-    (Required for new resource) The type of ALB that you want to create.
 
 
   zone (True, str, None)
@@ -49,6 +41,14 @@ Parameters
 
   cluster (True, str, None)
     (Required for new resource) The ID of the cluster that the ALB belongs to.
+
+
+  resource_group_id (False, str, None)
+    ID of the resource group.
+
+
+  type (True, str, None)
+    (Required for new resource) The type of ALB that you want to create.
 
 
   id (False, str, None)

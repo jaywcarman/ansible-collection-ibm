@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,40 +31,12 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  guid (True, str, None)
-    (Required for new resource) GUID of the App Configuration service. Get it from the service instance credentials section of the dashboard.
-
-
-  disabled_value (True, str, None)
-    (Required for new resource) Value of the feature when it is disabled. The value can be BOOLEAN, STRING or a NUMERIC value as per the `type` attribute.
-
-
-  collections (False, list, None)
-    List of collection id representing the collections that are associated with the specified feature flag.
-
-
-  name (True, str, None)
-    (Required for new resource) Feature name.
-
-
-  feature_id (True, str, None)
-    (Required for new resource) Feature id.
-
-
   type (True, str, None)
     (Required for new resource) Type of the feature (BOOLEAN, STRING, NUMERIC).
 
 
-  tags (False, str, None)
-    Tags associated with the feature.
-
-
-  environment_id (True, str, None)
-    (Required for new resource) Environment Id.
-
-
-  enabled_value (True, str, None)
-    (Required for new resource) Value of the feature when it is enabled. The value can be BOOLEAN, STRING or a NUMERIC value as per the `type` attribute.
+  disabled_value (True, str, None)
+    (Required for new resource) Value of the feature when it is disabled. The value can be BOOLEAN, STRING or a NUMERIC value as per the `type` attribute.
 
 
   description (False, str, None)
@@ -75,8 +47,36 @@ Parameters
     Rollout percentage of the feature.
 
 
+  guid (True, str, None)
+    (Required for new resource) GUID of the App Configuration service. Get it from the service instance credentials section of the dashboard.
+
+
+  feature_id (True, str, None)
+    (Required for new resource) Feature id.
+
+
   segment_rules (False, list, None)
     Specify the targeting rules that is used to set different feature flag values for different segments.
+
+
+  environment_id (True, str, None)
+    (Required for new resource) Environment Id.
+
+
+  tags (False, str, None)
+    Tags associated with the feature.
+
+
+  name (True, str, None)
+    (Required for new resource) Feature name.
+
+
+  enabled_value (True, str, None)
+    (Required for new resource) Value of the feature when it is enabled. The value can be BOOLEAN, STRING or a NUMERIC value as per the `type` attribute.
+
+
+  collections (False, list, None)
+    List of collection id representing the collections that are associated with the specified feature flag.
 
 
   id (False, str, None)
@@ -88,11 +88,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

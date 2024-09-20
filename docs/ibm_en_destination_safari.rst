@@ -23,73 +23,13 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
 
 Parameters
 ----------
-
-  icon_32x32 (False, str, None)
-    The Certificate File.
-
-
-  icon_128x128 (False, str, None)
-    The Certificate File.
-
-
-  icon_128x128_2x (False, str, None)
-    The Certificate File.
-
-
-  icon_128x128_content_type (False, str, None)
-    The Certificate File.
-
-
-  config (False, list, None)
-    Payload describing a destination configuration.
-
-
-  description (False, str, None)
-    The Destination description.
-
-
-  certificate (True, str, None)
-    (Required for new resource) The Certificate File.
-
-
-  icon_16x16 (False, str, None)
-    The Certificate File.
-
-
-  icon_32x32_content_type (False, str, None)
-    The Certificate File.
-
-
-  icon_128x128_2x_content_type (False, str, None)
-    The Certificate File.
-
-
-  name (True, str, None)
-    (Required for new resource) The Destintion name.
-
-
-  icon_16x16_content_type (False, str, None)
-    The Certificate File.
-
-
-  icon_16x16_2x_content_type (False, str, None)
-    The Certificate File.
-
-
-  icon_32x32_2x_content_type (False, str, None)
-    The Certificate File.
-
-
-  icon_32x32_2x (False, str, None)
-    The Certificate File.
-
 
   type (True, str, None)
     (Required for new resource) The type of Destination type push_ios.
@@ -99,12 +39,72 @@ Parameters
     Whether to collect the failed event in Cloud Object Storage bucket
 
 
-  icon_16x16_2x (False, str, None)
+  icon_16x16 (False, str, None)
+    The Certificate File.
+
+
+  icon_32x32_2x (False, str, None)
+    The Certificate File.
+
+
+  icon_16x16_content_type (False, str, None)
     The Certificate File.
 
 
   instance_guid (True, str, None)
     (Required for new resource) Unique identifier for IBM Cloud Event Notifications instance.
+
+
+  name (True, str, None)
+    (Required for new resource) The Destintion name.
+
+
+  icon_32x32_2x_content_type (False, str, None)
+    The Certificate File.
+
+
+  icon_128x128_2x (False, str, None)
+    The Certificate File.
+
+
+  icon_16x16_2x_content_type (False, str, None)
+    The Certificate File.
+
+
+  description (False, str, None)
+    The Destination description.
+
+
+  icon_16x16_2x (False, str, None)
+    The Certificate File.
+
+
+  icon_128x128 (False, str, None)
+    The Certificate File.
+
+
+  icon_32x32_content_type (False, str, None)
+    The Certificate File.
+
+
+  icon_128x128_content_type (False, str, None)
+    The Certificate File.
+
+
+  icon_128x128_2x_content_type (False, str, None)
+    The Certificate File.
+
+
+  config (False, list, None)
+    Payload describing a destination configuration.
+
+
+  certificate (True, str, None)
+    (Required for new resource) The Certificate File.
+
+
+  icon_32x32 (False, str, None)
+    The Certificate File.
 
 
   id (False, str, None)
@@ -116,11 +116,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

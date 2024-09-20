@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,20 +31,32 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  wait_until_successful (False, bool, True)
-    Whether to wait until the offering instance successfully provisions, or to return when accepted
+  catalog_id (True, str, None)
+    (Required for new resource) Catalog ID this instance was created from.
 
 
-  label (True, str, None)
-    (Required for new resource) the label for this instance.
+  cluster_namespaces (True, list, None)
+    (Required for new resource) List of target namespaces to install into.
 
 
   cluster_all_namespaces (True, bool, None)
     (Required for new resource) designate to install into all namespaces.
 
 
-  channel (False, str, None)
-    channel to target for the operator subscription. Required for operator bundles
+  install_plan (False, str, None)
+    install plan for the subscription of the operator- can be either automatic or manual. Required for operator bundles
+
+
+  parent_crn (False, str, None)
+    CRN of parent instance
+
+
+  wait_until_successful (False, bool, True)
+    Whether to wait until the offering instance successfully provisions, or to return when accepted
+
+
+  offering_id (True, str, None)
+    (Required for new resource) Offering ID this instance was created from.
 
 
   version (True, str, None)
@@ -55,8 +67,8 @@ Parameters
     (Required for new resource) Cluster region (e.g., us-south).
 
 
-  offering_id (True, str, None)
-    (Required for new resource) Offering ID this instance was created from.
+  label (True, str, None)
+    (Required for new resource) the label for this instance.
 
 
   cluster_id (True, str, None)
@@ -67,20 +79,16 @@ Parameters
     id of the resource group
 
 
-  install_plan (False, str, None)
-    install plan for the subscription of the operator- can be either automatic or manual. Required for operator bundles
-
-
-  catalog_id (True, str, None)
-    (Required for new resource) Catalog ID this instance was created from.
+  channel (False, str, None)
+    channel to target for the operator subscription. Required for operator bundles
 
 
   kind_format (True, str, None)
     (Required for new resource) the format this instance has (helm, operator, ova...).
 
 
-  cluster_namespaces (True, list, None)
-    (Required for new resource) List of target namespaces to install into.
+  plan_id (False, str, None)
+    id of the plan
 
 
   id (False, str, None)
@@ -92,11 +100,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

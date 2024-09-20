@@ -18,55 +18,23 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_database' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    point_in_time_recovery_deployment_id:
+    location:
         description:
-            - The CRN of source instance
-        required: False
+            - (Required for new resource) The location or the region in which Database instance exists
+        required: True
         type: str
-    configuration:
-        description:
-            - The configuration in JSON format
-        required: False
-        type: str
-    backup_encryption_key_crn:
-        description:
-            - The Backup Encryption Key CRN
-        required: False
-        type: str
-    point_in_time_recovery_time:
-        description:
-            - The point in time recovery time stamp of the deployed instance
-        required: False
-        type: str
-    users:
-        description:
-            - None
-        required: False
-        type: list
-        elements: dict
-    group:
-        description:
-            - None
-        required: False
-        type: list
-        elements: dict
     plan:
         description:
             - (Required for new resource) The plan type of the Database instance
         required: True
         type: str
-    service:
+    key_protect_instance:
         description:
-            - (Required for new resource) The name of the Cloud Internet database service
-        required: True
-        type: str
-    adminpassword:
-        description:
-            - The admin user password for the instance
+            - The CRN of Key protect instance
         required: False
         type: str
     key_protect_key:
@@ -74,14 +42,14 @@ options:
             - The CRN of Key protect key
         required: False
         type: str
-    location:
+    resource_group_id:
         description:
-            - (Required for new resource) The location or the region in which Database instance exists
-        required: True
+            - The id of the resource group in which the Database instance is present
+        required: False
         type: str
-    version:
+    configuration:
         description:
-            - The database version to provision if specified
+            - The configuration in JSON format
         required: False
         type: str
     remote_leader_id:
@@ -89,14 +57,40 @@ options:
             - The CRN of leader database
         required: False
         type: str
-    key_protect_instance:
+    backup_encryption_key_crn:
         description:
-            - The CRN of Key protect instance
+            - The Backup Encryption Key CRN
         required: False
         type: str
-    auto_scaling:
+    service:
         description:
-            - ICD Auto Scaling
+            - (Required for new resource) The name of the Cloud Internet database service
+        required: True
+        type: str
+    point_in_time_recovery_time:
+        description:
+            - The point in time recovery time stamp of the deployed instance
+        required: False
+        type: str
+    allowlist:
+        description:
+            - None
+        required: False
+        type: list
+        elements: dict
+    point_in_time_recovery_deployment_id:
+        description:
+            - The CRN of source instance
+        required: False
+        type: str
+    version:
+        description:
+            - The database version to provision if specified
+        required: False
+        type: str
+    logical_replication_slot:
+        description:
+            - None
         required: False
         type: list
         elements: dict
@@ -105,41 +99,47 @@ options:
             - (Required for new resource) Resource instance name for example, my Database instance
         required: True
         type: str
-    logical_replication_slot:
+    offline_restore:
+        description:
+            - Set offline restore mode for MongoDB Enterprise Edition
+        required: False
+        type: bool
+    adminpassword:
+        description:
+            - The admin user password for the instance
+        required: False
+        type: str
+    users:
         description:
             - None
         required: False
         type: list
         elements: dict
+    backup_id:
+        description:
+            - The CRN of backup source database
+        required: False
+        type: str
+    service_endpoints:
+        description:
+            - Types of the service endpoints. Possible values are 'public', 'private', 'public-and-private'.
+        required: False
+        type: str
     tags:
         description:
             - None
         required: False
         type: list
         elements: str
-    service_endpoints:
-        description:
-            - Types of the service endpoints. Possible values are 'public', 'private', 'public-and-private'.
-        required: False
-        type: str
-    offline_restore:
-        description:
-            - Set offline restore mode for MongoDB Enterprise Edition
-        required: False
-        type: bool
-    resource_group_id:
-        description:
-            - The id of the resource group in which the Database instance is present
-        required: False
-        type: str
-    backup_id:
-        description:
-            - The CRN of backup source database
-        required: False
-        type: str
-    allowlist:
+    group:
         description:
             - None
+        required: False
+        type: list
+        elements: dict
+    auto_scaling:
+        description:
+            - ICD Auto Scaling
         required: False
         type: list
         elements: dict
@@ -158,15 +158,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -189,37 +188,37 @@ author:
 
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
+    ('location', 'str'),
     ('plan', 'str'),
     ('service', 'str'),
-    ('location', 'str'),
     ('name', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'point_in_time_recovery_deployment_id',
-    'configuration',
-    'backup_encryption_key_crn',
-    'point_in_time_recovery_time',
-    'users',
-    'group',
-    'plan',
-    'service',
-    'adminpassword',
-    'key_protect_key',
     'location',
-    'version',
-    'remote_leader_id',
+    'plan',
     'key_protect_instance',
-    'auto_scaling',
-    'name',
-    'logical_replication_slot',
-    'tags',
-    'service_endpoints',
-    'offline_restore',
+    'key_protect_key',
     'resource_group_id',
-    'backup_id',
+    'configuration',
+    'remote_leader_id',
+    'backup_encryption_key_crn',
+    'service',
+    'point_in_time_recovery_time',
     'allowlist',
+    'point_in_time_recovery_deployment_id',
+    'version',
+    'logical_replication_slot',
+    'name',
+    'offline_restore',
+    'adminpassword',
+    'users',
+    'backup_id',
+    'service_endpoints',
+    'tags',
+    'group',
+    'auto_scaling',
 ]
 
 # Params for Data source
@@ -230,9 +229,9 @@ TL_REQUIRED_PARAMETERS_DS = [
 TL_ALL_PARAMETERS_DS = [
     'resource_group_id',
     'location',
-    'tags',
-    'name',
     'service',
+    'name',
+    'tags',
 ]
 
 TL_CONFLICTS_MAP = {
@@ -242,19 +241,70 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    point_in_time_recovery_deployment_id=dict(
+    location=dict(
+        required=False,
+        type='str'),
+    plan=dict(
+        required=False,
+        type='str'),
+    key_protect_instance=dict(
+        required=False,
+        type='str'),
+    key_protect_key=dict(
+        required=False,
+        type='str'),
+    resource_group_id=dict(
         required=False,
         type='str'),
     configuration=dict(
         required=False,
         type='str'),
+    remote_leader_id=dict(
+        required=False,
+        type='str'),
     backup_encryption_key_crn=dict(
+        required=False,
+        type='str'),
+    service=dict(
         required=False,
         type='str'),
     point_in_time_recovery_time=dict(
         required=False,
         type='str'),
+    allowlist=dict(
+        required=False,
+        elements='',
+        type='list'),
+    point_in_time_recovery_deployment_id=dict(
+        required=False,
+        type='str'),
+    version=dict(
+        required=False,
+        type='str'),
+    logical_replication_slot=dict(
+        required=False,
+        elements='',
+        type='list'),
+    name=dict(
+        required=False,
+        type='str'),
+    offline_restore=dict(
+        required=False,
+        type='bool'),
+    adminpassword=dict(
+        required=False,
+        type='str'),
     users=dict(
+        required=False,
+        elements='',
+        type='list'),
+    backup_id=dict(
+        required=False,
+        type='str'),
+    service_endpoints=dict(
+        required=False,
+        type='str'),
+    tags=dict(
         required=False,
         elements='',
         type='list'),
@@ -262,58 +312,7 @@ module_args = dict(
         required=False,
         elements='',
         type='list'),
-    plan=dict(
-        required=False,
-        type='str'),
-    service=dict(
-        required=False,
-        type='str'),
-    adminpassword=dict(
-        required=False,
-        type='str'),
-    key_protect_key=dict(
-        required=False,
-        type='str'),
-    location=dict(
-        required=False,
-        type='str'),
-    version=dict(
-        required=False,
-        type='str'),
-    remote_leader_id=dict(
-        required=False,
-        type='str'),
-    key_protect_instance=dict(
-        required=False,
-        type='str'),
     auto_scaling=dict(
-        required=False,
-        elements='',
-        type='list'),
-    name=dict(
-        required=False,
-        type='str'),
-    logical_replication_slot=dict(
-        required=False,
-        elements='',
-        type='list'),
-    tags=dict(
-        required=False,
-        elements='',
-        type='list'),
-    service_endpoints=dict(
-        required=False,
-        type='str'),
-    offline_restore=dict(
-        required=False,
-        type='bool'),
-    resource_group_id=dict(
-        required=False,
-        type='str'),
-    backup_id=dict(
-        required=False,
-        type='str'),
-    allowlist=dict(
         required=False,
         elements='',
         type='list'),
@@ -382,7 +381,7 @@ def run_module():
         resource_type='ibm_database',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -391,7 +390,7 @@ def run_module():
             resource_type='ibm_database',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

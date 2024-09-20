@@ -23,13 +23,17 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
 
 Parameters
 ----------
+
+  type (True, str, None)
+    (Required for new resource) Property type.
+
 
   value (False, str, None)
     Property value. Any string value is valid.
@@ -39,16 +43,12 @@ Parameters
     Options for `single_select` property type. Only needed when using `single_select` property type.
 
 
-  type (True, str, None)
-    (Required for new resource) Property type.
-
-
   locked (False, bool, False)
     When true, this property cannot be overridden by a trigger property or at runtime. Attempting to override it will result in run requests being rejected. The default is false.
 
 
   path (False, str, None)
-    A dot notation path for `integration` type properties only, that selects a value from the tool integration. If left blank the full tool integration data will be used.
+    A dot notation path for `integration` type properties only, to select a value from the tool integration. If left blank the full tool integration data will be used.
 
 
   pipeline_id (True, str, None)
@@ -68,11 +68,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)

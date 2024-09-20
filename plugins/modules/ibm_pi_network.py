@@ -18,10 +18,26 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_pi_network' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
+    pi_dns:
+        description:
+            - List of PI network DNS name
+        required: False
+        type: list
+        elements: str
+    pi_cidr:
+        description:
+            - PI network CIDR
+        required: False
+        type: str
+    pi_network_access_config:
+        description:
+            - PI network communication configuration
+        required: False
+        type: str
     pi_ipaddress_range:
         description:
             - List of one or more ip address range(s)
@@ -38,22 +54,6 @@ options:
             - (Required for new resource) PI network name
         required: True
         type: str
-    pi_cidr:
-        description:
-            - PI network CIDR
-        required: False
-        type: str
-    pi_cloud_instance_id:
-        description:
-            - (Required for new resource) PI cloud instance ID
-        required: True
-        type: str
-    pi_dns:
-        description:
-            - List of PI network DNS name
-        required: False
-        type: list
-        elements: str
     pi_gateway:
         description:
             - PI network gateway
@@ -64,10 +64,10 @@ options:
             - PI Maximum Transmission Unit
         required: False
         type: int
-    pi_network_access_config:
+    pi_cloud_instance_id:
         description:
-            - PI network communication configuration
-        required: False
+            - (Required for new resource) PI cloud instance ID
+        required: True
         type: str
     id:
         description:
@@ -118,15 +118,15 @@ TL_REQUIRED_PARAMETERS = [
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
+    'pi_dns',
+    'pi_cidr',
+    'pi_network_access_config',
     'pi_ipaddress_range',
     'pi_network_type',
     'pi_network_name',
-    'pi_cidr',
-    'pi_cloud_instance_id',
-    'pi_dns',
     'pi_gateway',
     'pi_network_mtu',
-    'pi_network_access_config',
+    'pi_cloud_instance_id',
 ]
 
 # Params for Data source
@@ -148,6 +148,16 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
+    pi_dns=dict(
+        required=False,
+        elements='',
+        type='list'),
+    pi_cidr=dict(
+        required=False,
+        type='str'),
+    pi_network_access_config=dict(
+        required=False,
+        type='str'),
     pi_ipaddress_range=dict(
         required=False,
         elements='',
@@ -158,23 +168,13 @@ module_args = dict(
     pi_network_name=dict(
         required=False,
         type='str'),
-    pi_cidr=dict(
-        required=False,
-        type='str'),
-    pi_cloud_instance_id=dict(
-        required=False,
-        type='str'),
-    pi_dns=dict(
-        required=False,
-        elements='',
-        type='list'),
     pi_gateway=dict(
         required=False,
         type='str'),
     pi_network_mtu=dict(
         required=False,
         type='int'),
-    pi_network_access_config=dict(
+    pi_cloud_instance_id=dict(
         required=False,
         type='str'),
     id=dict(
@@ -235,7 +235,7 @@ def run_module():
         resource_type='ibm_pi_network',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -244,7 +244,7 @@ def run_module():
             resource_type='ibm_pi_network',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

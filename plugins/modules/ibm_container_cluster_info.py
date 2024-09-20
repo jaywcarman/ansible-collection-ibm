@@ -17,22 +17,27 @@ version_added: "2.8"
 description:
     - Retrieve an IBM Cloud 'ibm_container_cluster' resource
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    alb_type:
-        description:
-            - None
-        required: False
-        type: str
-        default: all
     list_bounded_services:
         description:
             - If set to false bounded services won't be listed.
         required: False
         type: bool
         default: True
+    wait_till_timeout:
+        description:
+            - timeout for wait_till in minutes
+        required: False
+        type: int
+        default: 20
+    wait_till:
+        description:
+            - wait_till can be configured for Master Ready, One worker Ready, Ingress Ready or Normal
+        required: False
+        type: str
     resource_group_id:
         description:
             - ID of the resource group.
@@ -43,6 +48,12 @@ options:
             - Name or id of the cluster
         required: False
         type: str
+    alb_type:
+        description:
+            - None
+        required: False
+        type: str
+        default: all
     ibmcloud_api_key:
         description:
             - The IBM Cloud API key to authenticate with the IBM Cloud
@@ -60,10 +71,12 @@ TL_REQUIRED_PARAMETERS = [
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'alb_type',
     'list_bounded_services',
+    'wait_till_timeout',
+    'wait_till',
     'resource_group_id',
     'name',
+    'alb_type',
 ]
 
 
@@ -74,16 +87,22 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    alb_type=dict(
-        required=False,
-        type='str'),
     list_bounded_services=dict(
         required=False,
         type='bool'),
+    wait_till_timeout=dict(
+        required=False,
+        type='int'),
+    wait_till=dict(
+        required=False,
+        type='str'),
     resource_group_id=dict(
         required=False,
         type='str'),
     name=dict(
+        required=False,
+        type='str'),
+    alb_type=dict(
         required=False,
         type='str'),
     ibmcloud_api_key=dict(
@@ -106,7 +125,7 @@ def run_module():
         resource_type='ibm_container_cluster',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS,
         tl_all_params=TL_ALL_PARAMETERS)
 

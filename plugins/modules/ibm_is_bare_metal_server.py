@@ -18,22 +18,81 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_is_bare_metal_server' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    tags:
+    zone:
         description:
-            - Tags for the Bare metal server
+            - (Required for new resource) Zone name
+        required: True
+        type: str
+    user_data:
+        description:
+            - User data given for the bare metal server
         required: False
-        type: list
-        elements: str
+        type: str
     delete_type:
         description:
             - Enables stopping type of the bare metal server before deleting
         required: False
         type: str
         default: hard
+    primary_network_attachment:
+        description:
+            - The primary network attachment.
+        required: False
+        type: list
+        elements: dict
+    primary_network_interface:
+        description:
+            - Primary Network interface info
+        required: False
+        type: list
+        elements: dict
+    network_interfaces:
+        description:
+            - None
+        required: False
+        type: list
+        elements: dict
+    trusted_platform_module:
+        description:
+            - None
+        required: False
+        type: list
+        elements: dict
+    image:
+        description:
+            - (Required for new resource) image id
+        required: True
+        type: str
+    name:
+        description:
+            - Bare metal server name
+        required: False
+        type: str
+    profile:
+        description:
+            - (Required for new resource) profile name
+        required: True
+        type: str
+    access_tags:
+        description:
+            - List of access management tags
+        required: False
+        type: list
+        elements: str
+    bandwidth:
+        description:
+            - The total bandwidth (in megabits per second)
+        required: False
+        type: int
+    action:
+        description:
+            - This restart/start/stops a bare metal server.
+        required: False
+        type: str
     network_attachments:
         description:
             - The network attachments for this bare metal server, including the primary network attachment.
@@ -46,43 +105,6 @@ options:
         required: True
         type: list
         elements: str
-    action:
-        description:
-            - This restart/start/stops a bare metal server.
-        required: False
-        type: str
-    network_interfaces:
-        description:
-            - None
-        required: False
-        type: list
-        elements: dict
-    profile:
-        description:
-            - (Required for new resource) profile name
-        required: True
-        type: str
-    zone:
-        description:
-            - (Required for new resource) Zone name
-        required: True
-        type: str
-    primary_network_interface:
-        description:
-            - Primary Network interface info
-        required: False
-        type: list
-        elements: dict
-    name:
-        description:
-            - Bare metal server name
-        required: False
-        type: str
-    enable_secure_boot:
-        description:
-            - Indicates whether secure boot is enabled. If enabled, the image must support secure boot or the server will fail to boot.
-        required: False
-        type: bool
     vpc:
         description:
             - The VPC the bare metal server is to be a part of
@@ -93,34 +115,17 @@ options:
             - Resource group name
         required: False
         type: str
-    access_tags:
+    tags:
         description:
-            - List of access management tags
+            - Tags for the Bare metal server
         required: False
         type: list
         elements: str
-    primary_network_attachment:
+    enable_secure_boot:
         description:
-            - The primary network attachment.
+            - Indicates whether secure boot is enabled. If enabled, the image must support secure boot or the server will fail to boot.
         required: False
-        type: list
-        elements: dict
-    trusted_platform_module:
-        description:
-            - None
-        required: False
-        type: list
-        elements: dict
-    user_data:
-        description:
-            - User data given for the bare metal server
-        required: False
-        type: str
-    image:
-        description:
-            - (Required for new resource) image id
-        required: True
-        type: str
+        type: bool
     id:
         description:
             - (Required when updating or destroying existing resource) IBM Cloud Resource ID.
@@ -134,17 +139,6 @@ options:
             - absent
         default: available
         required: False
-    generation:
-        description:
-            - The generation of Virtual Private Cloud infrastructure
-              that you want to use. Supported values are 1 for VPC
-              generation 1, and 2 for VPC generation 2 infrastructure.
-              If this value is not specified, 2 is used by default. This
-              can also be provided via the environment variable
-              'IC_GENERATION'.
-        default: 2
-        required: False
-        type: int
     region:
         description:
             - The IBM Cloud region where you want to create your
@@ -167,32 +161,33 @@ author:
 
 # Top level parameter keys required by Terraform module
 TL_REQUIRED_PARAMETERS = [
-    ('keys', 'list'),
-    ('profile', 'str'),
     ('zone', 'str'),
     ('image', 'str'),
+    ('profile', 'str'),
+    ('keys', 'list'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'tags',
+    'zone',
+    'user_data',
     'delete_type',
+    'primary_network_attachment',
+    'primary_network_interface',
+    'network_interfaces',
+    'trusted_platform_module',
+    'image',
+    'name',
+    'profile',
+    'access_tags',
+    'bandwidth',
+    'action',
     'network_attachments',
     'keys',
-    'action',
-    'network_interfaces',
-    'profile',
-    'zone',
-    'primary_network_interface',
-    'name',
-    'enable_secure_boot',
     'vpc',
     'resource_group',
-    'access_tags',
-    'primary_network_attachment',
-    'trusted_platform_module',
-    'user_data',
-    'image',
+    'tags',
+    'enable_secure_boot',
 ]
 
 # Params for Data source
@@ -200,26 +195,63 @@ TL_REQUIRED_PARAMETERS_DS = [
 ]
 
 TL_ALL_PARAMETERS_DS = [
-    'identifier',
     'name',
+    'identifier',
 ]
 
 TL_CONFLICTS_MAP = {
-    'network_attachments': ['primary_network_interface', 'network_interfaces'],
-    'network_interfaces': ['primary_network_attachment', 'network_attachments'],
-    'primary_network_interface': ['primary_network_attachment', 'network_attachments'],
     'primary_network_attachment': ['primary_network_interface', 'network_interfaces'],
+    'primary_network_interface': ['primary_network_attachment', 'network_attachments'],
+    'network_interfaces': ['primary_network_attachment', 'network_attachments'],
+    'network_attachments': ['primary_network_interface', 'network_interfaces'],
 }
 
 # define available arguments/parameters a user can pass to the module
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    tags=dict(
+    zone=dict(
+        required=False,
+        type='str'),
+    user_data=dict(
+        required=False,
+        type='str'),
+    delete_type=dict(
+        required=False,
+        type='str'),
+    primary_network_attachment=dict(
         required=False,
         elements='',
         type='list'),
-    delete_type=dict(
+    primary_network_interface=dict(
+        required=False,
+        elements='',
+        type='list'),
+    network_interfaces=dict(
+        required=False,
+        elements='',
+        type='list'),
+    trusted_platform_module=dict(
+        required=False,
+        elements='',
+        type='list'),
+    image=dict(
+        required=False,
+        type='str'),
+    name=dict(
+        required=False,
+        type='str'),
+    profile=dict(
+        required=False,
+        type='str'),
+    access_tags=dict(
+        required=False,
+        elements='',
+        type='list'),
+    bandwidth=dict(
+        required=False,
+        type='int'),
+    action=dict(
         required=False,
         type='str'),
     network_attachments=dict(
@@ -230,53 +262,19 @@ module_args = dict(
         required=False,
         elements='',
         type='list'),
-    action=dict(
-        required=False,
-        type='str'),
-    network_interfaces=dict(
-        required=False,
-        elements='',
-        type='list'),
-    profile=dict(
-        required=False,
-        type='str'),
-    zone=dict(
-        required=False,
-        type='str'),
-    primary_network_interface=dict(
-        required=False,
-        elements='',
-        type='list'),
-    name=dict(
-        required=False,
-        type='str'),
-    enable_secure_boot=dict(
-        required=False,
-        type='bool'),
     vpc=dict(
         required=False,
         type='str'),
     resource_group=dict(
         required=False,
         type='str'),
-    access_tags=dict(
+    tags=dict(
         required=False,
         elements='',
         type='list'),
-    primary_network_attachment=dict(
+    enable_secure_boot=dict(
         required=False,
-        elements='',
-        type='list'),
-    trusted_platform_module=dict(
-        required=False,
-        elements='',
-        type='list'),
-    user_data=dict(
-        required=False,
-        type='str'),
-    image=dict(
-        required=False,
-        type='str'),
+        type='bool'),
     id=dict(
         required=False,
         type='str'),
@@ -285,11 +283,6 @@ module_args = dict(
         required=False,
         default='available',
         choices=(['available', 'absent'])),
-    generation=dict(
-        type='int',
-        required=False,
-        fallback=(env_fallback, ['IC_GENERATION']),
-        default=2),
     region=dict(
         type='str',
         fallback=(env_fallback, ['IC_REGION']),
@@ -333,28 +326,29 @@ def run_module():
     if len(conflicts):
         module.fail_json(msg=("conflicts exist: {}".format(conflicts)))
 
-    # VPC required arguments checks
-    if module.params['generation'] == 1:
-        missing_args = []
-        if module.params['iaas_classic_username'] is None:
-            missing_args.append('iaas_classic_username')
-        if module.params['iaas_classic_api_key'] is None:
-            missing_args.append('iaas_classic_api_key')
-        if missing_args:
-            module.fail_json(msg=(
-                "VPC generation=1 missing required arguments: " +
-                ", ".join(missing_args)))
-    elif module.params['generation'] == 2:
-        if module.params['ibmcloud_api_key'] is None:
-            module.fail_json(
-                msg=("VPC generation=2 missing required argument: "
-                     "ibmcloud_api_key"))
+    if 'generation' in module.params:
+        # VPC required arguments checks
+        if module.params['generation'] == 1:
+            missing_args = []
+            if module.params['iaas_classic_username'] is None:
+                missing_args.append('iaas_classic_username')
+            if module.params['iaas_classic_api_key'] is None:
+                missing_args.append('iaas_classic_api_key')
+            if missing_args:
+                module.fail_json(msg=(
+                    "VPC generation=1 missing required arguments: " +
+                    ", ".join(missing_args)))
+        elif module.params['generation'] == 2:
+            if module.params['ibmcloud_api_key'] is None:
+                module.fail_json(
+                    msg=("VPC generation=2 missing required argument: "
+                         "ibmcloud_api_key"))
 
     result_ds = ibmcloud_terraform(
         resource_type='ibm_is_bare_metal_server',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -363,7 +357,7 @@ def run_module():
             resource_type='ibm_is_bare_metal_server',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

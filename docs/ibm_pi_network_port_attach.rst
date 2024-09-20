@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,12 +31,12 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
+  pi_cloud_instance_id (True, str, None)
+    (Required for new resource)
+
+
   pi_network_port_ipaddress (False, str, None)
     None
-
-
-  pi_network_port_description (False, str, Port Created via Terraform)
-    A human readable description for this network Port
 
 
   pi_instance_id (True, str, None)
@@ -47,8 +47,8 @@ Parameters
     (Required for new resource) Network Name - This is the subnet name  in the Cloud instance
 
 
-  pi_cloud_instance_id (True, str, None)
-    (Required for new resource)
+  pi_network_port_description (False, str, Port Created via Terraform)
+    A human readable description for this network Port
 
 
   id (False, str, None)

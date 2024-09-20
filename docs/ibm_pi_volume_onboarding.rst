@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,16 +31,16 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
+  pi_onboarding_volumes (True, list, None)
+    (Required for new resource)
+
+
   pi_description (False, str, None)
     Description of the volume onboarding operation
 
 
   pi_cloud_instance_id (True, str, None)
     (Required for new resource) Cloud Instance ID - This is the service_instance_id.
-
-
-  pi_onboarding_volumes (True, list, None)
-    (Required for new resource)
 
 
   id (False, str, None)

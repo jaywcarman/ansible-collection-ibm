@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,20 +31,20 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  secret_group_id (False, str, None)
-    Secret group for the instance registration
-
-
-  is_default (False, bool, False)
-    Designates if the instance is the default for the cluster
-
-
   instance_crn (True, str, None)
     (Required for new resource) Instance CRN id
 
 
   cluster (True, str, None)
     (Required for new resource) Cluster ID
+
+
+  secret_group_id (False, str, None)
+    Secret group for the instance registration
+
+
+  is_default (False, bool, False)
+    Designates if the instance is the default for the cluster
 
 
   id (False, str, None)

@@ -18,20 +18,10 @@ description:
     - Create, update or destroy an IBM Cloud 'ibm_code_engine_build' resource
     - This module supports idempotency
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
-    source_context_dir:
-        description:
-            - Option directory in the repository that contains the buildpacks file or the Dockerfile.
-        required: False
-        type: str
-    source_revision:
-        description:
-            - Commit, tag, or branch in the source repository to pull. This field is optional if the `source_type` is `git` and uses the HEAD of default branch if not specified. If the `source_type` value is `local`, this field must be omitted.
-        required: False
-        type: str
     project_id:
         description:
             - (Required for new resource) The ID of the project.
@@ -42,43 +32,10 @@ options:
             - (Required for new resource) The name of the image.
         required: True
         type: str
-    output_secret:
-        description:
-            - (Required for new resource) The secret that is required to access the image registry. Make sure that the secret is granted with push permissions towards the specified container registry namespace.
-        required: True
-        type: str
-    strategy_size:
-        description:
-            - Optional size for the build, which determines the amount of resources used. Build sizes are `small`, `medium`, `large`, `xlarge`.
-        required: False
-        type: str
-        default: medium
     source_secret:
         description:
             - Name of the secret that is used access the repository source. This field is optional if the `source_type` is `git`. Additionally, if the `source_url` points to a repository that requires authentication, the build will be created but cannot access any source code, until this property is provided, too. If the `source_type` value is `local`, this field must be omitted.
         required: False
-        type: str
-    source_type:
-        description:
-            - Specifies the type of source to determine if your build source is in a repository or based on local source code.* local - For builds from local source code.* git - For builds from git version controlled source code.
-        required: False
-        type: str
-        default: git
-    timeout:
-        description:
-            - The maximum amount of time, in seconds, that can pass before the build must succeed or fail.
-        required: False
-        type: int
-        default: 600
-    name:
-        description:
-            - (Required for new resource) The name of the build. Use a name that is unique within the project.
-        required: True
-        type: str
-    strategy_type:
-        description:
-            - (Required for new resource) The strategy to use for building the image.
-        required: True
         type: str
     source_url:
         description:
@@ -91,6 +48,49 @@ options:
         required: False
         type: str
         default: Dockerfile
+    source_revision:
+        description:
+            - Commit, tag, or branch in the source repository to pull. This field is optional if the `source_type` is `git` and uses the HEAD of default branch if not specified. If the `source_type` value is `local`, this field must be omitted.
+        required: False
+        type: str
+    timeout:
+        description:
+            - The maximum amount of time, in seconds, that can pass before the build must succeed or fail.
+        required: False
+        type: int
+        default: 600
+    strategy_type:
+        description:
+            - (Required for new resource) The strategy to use for building the image.
+        required: True
+        type: str
+    name:
+        description:
+            - (Required for new resource) The name of the build.
+        required: True
+        type: str
+    output_secret:
+        description:
+            - (Required for new resource) The secret that is required to access the image registry. Make sure that the secret is granted with push permissions towards the specified container registry namespace.
+        required: True
+        type: str
+    source_context_dir:
+        description:
+            - Optional directory in the repository that contains the buildpacks file or the Dockerfile.
+        required: False
+        type: str
+    source_type:
+        description:
+            - Specifies the type of source to determine if your build source is in a repository or based on local source code.* local - For builds from local source code.* git - For builds from git version controlled source code.
+        required: False
+        type: str
+        default: git
+    strategy_size:
+        description:
+            - Optional size for the build, which determines the amount of resources used. Build sizes are `small`, `medium`, `large`, `xlarge`, `xxlarge`.
+        required: False
+        type: str
+        default: medium
     id:
         description:
             - (Required when updating or destroying existing resource) IBM Cloud Resource ID.
@@ -106,15 +106,14 @@ options:
         required: False
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -139,26 +138,26 @@ author:
 TL_REQUIRED_PARAMETERS = [
     ('project_id', 'str'),
     ('output_image', 'str'),
-    ('output_secret', 'str'),
-    ('name', 'str'),
     ('strategy_type', 'str'),
+    ('name', 'str'),
+    ('output_secret', 'str'),
 ]
 
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
-    'source_context_dir',
-    'source_revision',
     'project_id',
     'output_image',
-    'output_secret',
-    'strategy_size',
     'source_secret',
-    'source_type',
-    'timeout',
-    'name',
-    'strategy_type',
     'source_url',
     'strategy_spec_file',
+    'source_revision',
+    'timeout',
+    'strategy_type',
+    'name',
+    'output_secret',
+    'source_context_dir',
+    'source_type',
+    'strategy_size',
 ]
 
 # Params for Data source
@@ -179,43 +178,43 @@ TL_CONFLICTS_MAP = {
 from ansible_collections.ibm.cloudcollection.plugins.module_utils.ibmcloud import Terraform, ibmcloud_terraform
 from ansible.module_utils.basic import env_fallback
 module_args = dict(
-    source_context_dir=dict(
-        required=False,
-        type='str'),
-    source_revision=dict(
-        required=False,
-        type='str'),
     project_id=dict(
         required=False,
         type='str'),
     output_image=dict(
         required=False,
         type='str'),
-    output_secret=dict(
-        required=False,
-        type='str'),
-    strategy_size=dict(
-        required=False,
-        type='str'),
     source_secret=dict(
-        required=False,
-        type='str'),
-    source_type=dict(
-        required=False,
-        type='str'),
-    timeout=dict(
-        required=False,
-        type='int'),
-    name=dict(
-        required=False,
-        type='str'),
-    strategy_type=dict(
         required=False,
         type='str'),
     source_url=dict(
         required=False,
         type='str'),
     strategy_spec_file=dict(
+        required=False,
+        type='str'),
+    source_revision=dict(
+        required=False,
+        type='str'),
+    timeout=dict(
+        required=False,
+        type='int'),
+    strategy_type=dict(
+        required=False,
+        type='str'),
+    name=dict(
+        required=False,
+        type='str'),
+    output_secret=dict(
+        required=False,
+        type='str'),
+    source_context_dir=dict(
+        required=False,
+        type='str'),
+    source_type=dict(
+        required=False,
+        type='str'),
+    strategy_size=dict(
         required=False,
         type='str'),
     id=dict(
@@ -283,7 +282,7 @@ def run_module():
         resource_type='ibm_code_engine_build',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS_DS,
         tl_all_params=TL_ALL_PARAMETERS_DS)
 
@@ -292,7 +291,7 @@ def run_module():
             resource_type='ibm_code_engine_build',
             tf_type='resource',
             parameters=module.params,
-            ibm_provider_version='1.65.1',
+            ibm_provider_version='1.69.2',
             tl_required_params=TL_REQUIRED_PARAMETERS,
             tl_all_params=TL_ALL_PARAMETERS)
         if result['rc'] > 0:

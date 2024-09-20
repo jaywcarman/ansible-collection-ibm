@@ -17,7 +17,7 @@ version_added: "2.8"
 description:
     - Retrieve an IBM Cloud 'ibm_hpcs' resource
 requirements:
-    - IBM-Cloud terraform-provider-ibm v1.65.1
+    - IBM-Cloud terraform-provider-ibm v1.69.2
     - Terraform v1.5.5
 
 options:
@@ -26,33 +26,32 @@ options:
             - The id of the resource group in which the instance is present
         required: False
         type: str
-    location:
-        description:
-            - The location or the environment in which instance exists
-        required: False
-        type: str
-    name:
-        description:
-            - Resource instance name for example, myobjectstorage
-        required: True
-        type: str
     service:
         description:
             - The service type of the instance
         required: False
         type: str
         default: hs-crypto
+    name:
+        description:
+            - Resource instance name for example, myobjectstorage
+        required: True
+        type: str
+    location:
+        description:
+            - The location or the environment in which instance exists
+        required: False
+        type: str
     iaas_classic_username:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure (SoftLayer) user name. This can also be provided
-              via the environment variable 'IAAS_CLASSIC_USERNAME'.
+            - The IBM Cloud Classic Infrastructure (SoftLayer) user name. This
+              can also be provided via the environment variable
+              'IAAS_CLASSIC_USERNAME'.
         required: False
     iaas_classic_api_key:
         description:
-            - (Required when generation = 1) The IBM Cloud Classic
-              Infrastructure API key. This can also be provided via the
-              environment variable 'IAAS_CLASSIC_API_KEY'.
+            - The IBM Cloud Classic Infrastructure API key. This can also be
+              provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
         required: False
     region:
         description:
@@ -81,9 +80,9 @@ TL_REQUIRED_PARAMETERS = [
 # All top level parameter keys supported by Terraform module
 TL_ALL_PARAMETERS = [
     'resource_group_id',
-    'location',
-    'name',
     'service',
+    'name',
+    'location',
 ]
 
 
@@ -97,13 +96,13 @@ module_args = dict(
     resource_group_id=dict(
         required=False,
         type='str'),
-    location=dict(
+    service=dict(
         required=False,
         type='str'),
     name=dict(
         required=True,
         type='str'),
-    service=dict(
+    location=dict(
         required=False,
         type='str'),
     iaas_classic_username=dict(
@@ -140,7 +139,7 @@ def run_module():
         resource_type='ibm_hpcs',
         tf_type='data',
         parameters=module.params,
-        ibm_provider_version='1.65.1',
+        ibm_provider_version='1.69.2',
         tl_required_params=TL_REQUIRED_PARAMETERS,
         tl_all_params=TL_ALL_PARAMETERS)
 

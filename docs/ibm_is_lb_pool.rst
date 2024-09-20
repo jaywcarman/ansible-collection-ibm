@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -35,36 +35,8 @@ Parameters
     (Required for new resource) Load Balancer Pool name
 
 
-  lb (True, str, None)
-    (Required for new resource) Load Balancer ID
-
-
-  health_monitor_url (False, str, None)
-    Health monitor URL of LB Pool
-
-
-  algorithm (True, str, None)
-    (Required for new resource) Load Balancer Pool algorithm
-
-
   health_retries (True, int, None)
     (Required for new resource) Load Balancer health retry count
-
-
-  proxy_protocol (False, str, None)
-    PROXY protocol setting for this pool
-
-
-  protocol (True, str, None)
-    (Required for new resource) Load Balancer Protocol
-
-
-  health_delay (True, int, None)
-    (Required for new resource) Load Blancer health delay time period
-
-
-  health_timeout (True, int, None)
-    (Required for new resource) Load Balancer health timeout interval
 
 
   health_monitor_port (False, int, None)
@@ -75,12 +47,40 @@ Parameters
     Load Balancer Pool session persisence type.
 
 
-  health_type (True, str, None)
-    (Required for new resource) Load Balancer health type
+  protocol (True, str, None)
+    (Required for new resource) Load Balancer Protocol
+
+
+  health_delay (True, int, None)
+    (Required for new resource) Load Blancer health delay time period
+
+
+  health_monitor_url (False, str, None)
+    Health monitor URL of LB Pool
+
+
+  algorithm (True, str, None)
+    (Required for new resource) Load Balancer Pool algorithm
 
 
   session_persistence_app_cookie_name (False, str, None)
     Load Balancer Pool session persisence app cookie name.
+
+
+  lb (True, str, None)
+    (Required for new resource) Load Balancer ID
+
+
+  health_timeout (True, int, None)
+    (Required for new resource) Load Balancer health timeout interval
+
+
+  health_type (True, str, None)
+    (Required for new resource) Load Balancer health type
+
+
+  proxy_protocol (False, str, None)
+    PROXY protocol setting for this pool
 
 
   id (False, str, None)
@@ -89,10 +89,6 @@ Parameters
 
   state (False, any, available)
     State of resource
-
-
-  generation (False, int, 2)
-    The generation of Virtual Private Cloud infrastructure that you want to use. Supported values are 1 for VPC generation 1, and 2 for VPC generation 2 infrastructure. If this value is not specified, 2 is used by default. This can also be provided via the environment variable 'IC_GENERATION'.
 
 
   region (False, str, us-south)

@@ -23,13 +23,21 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
 
 Parameters
 ----------
+
+  update_secret (False, int, None)
+    Updates secret from secrets manager if value is changed (increment each usage)
+
+
+  fields (True, list, None)
+    (Required for new resource) Fields of an opaque secret
+
 
   cluster (True, str, None)
     (Required for new resource) Cluster ID or name
@@ -45,14 +53,6 @@ Parameters
 
   persistence (False, bool, False)
     Persistence of secret
-
-
-  update_secret (False, int, None)
-    Updates secret from secrets manager if value is changed (increment each usage)
-
-
-  fields (True, list, None)
-    (Required for new resource) Fields of an opaque secret
 
 
   id (False, str, None)

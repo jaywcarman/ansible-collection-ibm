@@ -23,7 +23,7 @@ Requirements
 ------------
 The below requirements are needed on the host that executes this module.
 
-- IBM-Cloud terraform-provider-ibm v1.65.1
+- IBM-Cloud terraform-provider-ibm v1.69.2
 - Terraform v1.5.5
 
 
@@ -31,68 +31,68 @@ The below requirements are needed on the host that executes this module.
 Parameters
 ----------
 
-  responsible_person (False, str, None)
-    Responsible person for DNS record
-
-
-  retry (False, int, None)
-    Retry count
-
-
-  priority (False, int, 0)
-    priority info
-
-
-  tags (False, list, None)
-    tags set for the resource
-
-
-  data (True, str, None)
-    (Required for new resource) DNS record data
-
-
   domain_id (True, int, None)
     (Required for new resource) Domain ID of dns record instance
-
-
-  host (True, str, None)
-    (Required for new resource) Hostname
-
-
-  expire (False, int, None)
-    DNS record expiry info
-
-
-  ttl (True, int, None)
-    (Required for new resource) TTL configuration
-
-
-  type (True, str, None)
-    (Required for new resource) DNS record type
-
-
-  service (False, str, None)
-    service info
-
-
-  protocol (False, str, None)
-    protocol info
-
-
-  port (False, int, None)
-    port number
 
 
   mx_priority (False, int, 0)
     Maximum priority
 
 
+  responsible_person (False, str, None)
+    Responsible person for DNS record
+
+
+  tags (False, list, None)
+    tags set for the resource
+
+
+  expire (False, int, None)
+    DNS record expiry info
+
+
+  host (True, str, None)
+    (Required for new resource) Hostname
+
+
+  type (True, str, None)
+    (Required for new resource) DNS record type
+
+
+  port (False, int, None)
+    port number
+
+
   refresh (False, int, None)
     refresh rate
 
 
+  retry (False, int, None)
+    Retry count
+
+
   minimum_ttl (False, int, None)
     Minimun TTL configuration
+
+
+  ttl (True, int, None)
+    (Required for new resource) TTL configuration
+
+
+  service (False, str, None)
+    service info
+
+
+  data (True, str, None)
+    (Required for new resource) DNS record data
+
+
+  protocol (False, str, None)
+    protocol info
+
+
+  priority (False, int, 0)
+    priority info
 
 
   weight (False, int, 0)
@@ -108,11 +108,11 @@ Parameters
 
 
   iaas_classic_username (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
+    The IBM Cloud Classic Infrastructure (SoftLayer) user name. This can also be provided via the environment variable 'IAAS_CLASSIC_USERNAME'.
 
 
   iaas_classic_api_key (False, any, None)
-    (Required when generation = 1) The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
+    The IBM Cloud Classic Infrastructure API key. This can also be provided via the environment variable 'IAAS_CLASSIC_API_KEY'.
 
 
   region (False, any, us-south)
